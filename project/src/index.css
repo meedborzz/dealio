@@ -1,0 +1,450 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme CSS Variables */
+:root {
+  --brand: #b892b9;
+  --brand-dark: #9a7a9b;
+  --brand-light: #d4b5d6;
+  --g1: #b892b9;
+  --g2: #9a7a9b;
+  --ink-900: #0A0A0A;
+  --ink-700: #222;
+  --ink-600: #3A3A3A;
+  --ink-500: #555;
+  --ink-400: #6F6F6F;
+  --ui-bg: #fff;
+  --ui-soft: #F7F7F7;
+  --ui-line: #EAEAEA;
+
+  /* Enhanced theme variables */
+  --text-primary: #0A0A0A;
+  --text-secondary: #555;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F7F7F7;
+  --border-primary: #EAEAEA;
+
+  /* Safe Area Insets for iOS notch and Android gesture areas */
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-right: env(safe-area-inset-right);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: env(safe-area-inset-left);
+}
+
+.dark {
+  --brand: #d4b5d6;
+  --brand-dark: #b892b9;
+  --brand-light: #e5d1e7;
+  --g1: #d4b5d6;
+  --g2: #b892b9;
+  --ink-900: #FFFFFF;
+  --ink-700: #E5E5E5;
+  --ink-600: #CCCCCC;
+  --ink-500: #A3A3A3;
+  --ink-400: #737373;
+  --ui-bg: #0A0A0A;
+  --ui-soft: #1A1A1A;
+  --ui-line: #2A2A2A;
+
+  /* Enhanced theme variables */
+  --text-primary: #FFFFFF;
+  --text-secondary: #A3A3A3;
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #1A1A1A;
+  --border-primary: #2A2A2A;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    @apply text-[15px] leading-6 font-sans;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #root {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Monochrome scrollbars */
+  ::-webkit-scrollbar {
+    @apply w-1 md:w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--bg-secondary);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border-primary);
+    @apply rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-secondary);
+  }
+
+  /* Hide scrollbars for carousels */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Smooth scroll snap for carousels */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom cursor for draggable elements */
+  .cursor-grab {
+    cursor: grab;
+  }
+
+  .cursor-grabbing {
+    cursor: grabbing;
+  }
+
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 299 24% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 299 24% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 299 24% 65%;
+    --chart-1: 299 24% 65%;
+    --chart-2: 217 91% 60%;
+    --chart-3: 45 93% 47%;
+    --chart-4: 0 84% 60%;
+    --chart-5: 0 0% 45%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 299 32% 77%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 299 32% 77%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 299 32% 77%;
+    --chart-1: 299 32% 77%;
+    --chart-2: 217 91% 70%;
+    --chart-3: 45 93% 57%;
+    --chart-4: 0 84% 70%;
+    --chart-5: 0 0% 60%;
+  }
+
+  /* Hide bottom navigation when in map full-screen mode */
+  body.map-fullscreen .mobile-bottom-nav {
+    display: none !important;
+  }
+
+  body.map-fullscreen nav[class*="bottom"] {
+    display: none !important;
+  }
+}
+
+@layer components {
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .mobile-safe-area {
+    padding-bottom: var(--safe-area-inset-bottom);
+  }
+
+  /* Native App Header with Safe Area */
+  .native-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding-top: var(--safe-area-inset-top);
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  /* Native App Bottom Navigation with Safe Area */
+  .native-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding-bottom: var(--safe-area-inset-bottom);
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-primary);
+  }
+
+  /* Typography scale */
+  .text-h1 {
+    @apply text-xl font-bold font-headline;
+    color: var(--text-primary);
+  }
+
+  .text-h2 {
+    @apply text-lg font-bold font-headline;
+    color: var(--text-primary);
+  }
+
+  .text-body {
+    @apply text-[15px] leading-6 font-sans;
+    color: var(--text-secondary);
+  }
+
+  .text-meta {
+    @apply text-sm font-sans;
+    color: var(--text-secondary);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-headline;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Safe Area Inset Utilities for Native App Feel */
+  .pt-safe {
+    padding-top: var(--safe-area-inset-top);
+  }
+
+  .pb-safe {
+    padding-bottom: var(--safe-area-inset-bottom);
+  }
+
+  .pl-safe {
+    padding-left: var(--safe-area-inset-left);
+  }
+
+  .pr-safe {
+    padding-right: var(--safe-area-inset-right);
+  }
+
+  .px-safe {
+    padding-left: var(--safe-area-inset-left);
+    padding-right: var(--safe-area-inset-right);
+  }
+
+  .py-safe {
+    padding-top: var(--safe-area-inset-top);
+    padding-bottom: var(--safe-area-inset-bottom);
+  }
+
+  .p-safe {
+    padding: var(--safe-area-inset-top) var(--safe-area-inset-right) var(--safe-area-inset-bottom) var(--safe-area-inset-left);
+  }
+
+  /* Margin Safe Area */
+  .mt-safe {
+    margin-top: var(--safe-area-inset-top);
+  }
+
+  .mb-safe {
+    margin-bottom: var(--safe-area-inset-bottom);
+  }
+
+  .ml-safe {
+    margin-left: var(--safe-area-inset-left);
+  }
+
+  .mr-safe {
+    margin-right: var(--safe-area-inset-right);
+  }
+
+  /* Combined padding with safe areas */
+  .pt-4-safe {
+    padding-top: calc(1rem + var(--safe-area-inset-top));
+  }
+
+  .pb-4-safe {
+    padding-bottom: calc(1rem + var(--safe-area-inset-bottom));
+  }
+
+  .pt-6-safe {
+    padding-top: calc(1.5rem + var(--safe-area-inset-top));
+  }
+
+  .pb-6-safe {
+    padding-bottom: calc(1.5rem + var(--safe-area-inset-bottom));
+  }
+
+  /* Full viewport height accounting for safe areas */
+  .min-h-screen-safe {
+    min-height: 100vh;
+    min-height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+  }
+
+  .h-screen-safe {
+    height: 100vh;
+    height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+  }
+
+  /* Top positioning with safe area */
+  .top-safe {
+    top: var(--safe-area-inset-top);
+  }
+
+  .bottom-safe {
+    bottom: var(--safe-area-inset-bottom);
+  }
+
+  /* Native app momentum scrolling */
+  .scroll-native {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Disable user selection for native feel */
+  .select-none-important {
+    -webkit-user-select: none !important;
+    user-select: none !important;
+  }
+}
+
+@layer components {
+
+  /* Mobile UI Components */
+  .mobile-header {
+    @apply sticky top-0 z-40 bg-ui-bg/95 backdrop-blur-sm border-b border-ui-line;
+  }
+
+  .mobile-stat-card {
+    @apply relative overflow-hidden transition-all duration-200;
+  }
+
+  .mobile-card {
+    @apply bg-white p-4 rounded-xl shadow-sm border border-ui-line;
+  }
+
+  .mobile-card-lg {
+    @apply p-5;
+  }
+
+  .mobile-icon {
+    @apply w-5 h-5;
+  }
+
+  .mobile-icon-sm {
+    @apply w-4 h-4;
+  }
+
+  .mobile-icon-lg {
+    @apply w-6 h-6;
+  }
+
+  .mobile-title {
+    @apply text-base font-semibold leading-tight text-ink-900;
+  }
+
+  .mobile-subtitle {
+    @apply text-sm font-medium text-ink-700;
+  }
+
+  .mobile-caption {
+    @apply text-xs text-ink-500 font-medium;
+  }
+
+  .mobile-btn {
+    @apply px-4 py-2 font-medium active:scale-95 transition-transform;
+  }
+
+  .mobile-section {
+    @apply mb-6;
+  }
+
+  .mobile-action-card {
+    @apply active:scale-[0.98] transition-all cursor-pointer;
+  }
+
+  .mobile-rounded {
+    @apply rounded-lg;
+  }
+
+  .mobile-p-2 {
+    @apply p-2;
+  }
+
+  .mobile-shadow {
+    @apply shadow-sm;
+  }
+}

@@ -1,0 +1,15 @@
+export const FEATURES = {
+  QR: false,
+  LOYALTY: false,
+  WALLET: false,
+  PRICING: false,
+  REFERRAL: true,
+  MESSAGING: false,
+  FAVORITES: false,
+  REVIEWS: false,
+  MAP_VIEW: false,
+  ADVANCED_FILTERS: false,
+  SAVED_SEARCHES: false,
+  BUSINESS_ANALYTICS: false,
+  COMMISSION: false,
+} as const;
