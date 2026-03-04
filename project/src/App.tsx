@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ToastProvider } from './components/ui/toast';
@@ -9,6 +8,8 @@ import OnboardingPage from './pages/OnboardingPage';
 import AppRoutes from './app/routes';
 import ScrollToTop from './components/ScrollToTop';
 import { usePreferences } from './hooks/usePreferences';
+import { useAuth } from './hooks/useAuth';
+import { useState } from 'react';
 
 if (import.meta.env.DEV) {
   import('./lib/assertEnv').then(({ assertEnv }) => {
@@ -18,7 +19,11 @@ if (import.meta.env.DEV) {
 }
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [splashDone, setSplashDone] = useState(false);
+  const { loading } = useAuth();
+
+  // Keep splash screen visible until both animation is done and auth is initialized
+  const showSplash = !splashDone || loading;
 
   return (
     <Router>
@@ -26,7 +31,7 @@ function App() {
       <ThemeProvider>
         <ToastProvider>
           {showSplash ? (
-            <SplashScreen onComplete={() => setShowSplash(false)} />
+            <SplashScreen onComplete={() => setSplashDone(true)} />
           ) : (
             <AppContent />
           )}
@@ -38,11 +43,15 @@ function App() {
 
 function AppContent() {
   const { preferences } = usePreferences();
+  const { user } = useAuth();
 
   if (!preferences.setupCompleted) {
-    if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/business')) {
-      // Allow bypassing setup for admin/business routes if user is trying to access them directly
-      console.log('Bypassing onboarding for admin/business route');
+    const isRestrictedRoute = window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/business');
+
+    if (isRestrictedRoute && user) {
+      // Allow bypassing setup for admin/business routes ONLY if we have a user 
+      // This prevents the "Access Denied" flash during logout
+      console.log('Bypassing onboarding for authenticated user on restricted route');
     } else {
       return <OnboardingPage />;
     }

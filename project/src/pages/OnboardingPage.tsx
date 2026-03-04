@@ -105,7 +105,7 @@ const OnboardingPage: React.FC = () => {
           {currentScreenData.text}
         </p>
 
-        <div className="flex justify-center space-x-2 mb-12">
+        <div className="flex justify-center space-x-2 mb-12 mt-8">
           {screens.map((_, index) => (
             <div
               key={index}

@@ -3,8 +3,7 @@ import {
   NotificationPayload,
   NotificationType,
   NotificationChannelType,
-  Notification as AppNotification,
-  NotificationTemplate
+  Notification as AppNotification
 } from '../types';
 import { FEATURES } from '../config/features';
 
@@ -167,29 +166,29 @@ const DEFAULT_TEMPLATES: Record<NotificationType, {
 // Template variable replacement utility
 function replaceTemplateVariables(template: string, data: any): string {
   let result = template;
-  
+
   // Simple template replacement (in production, use a proper template engine like Handlebars)
   Object.keys(data).forEach(key => {
     const regex = new RegExp(`{{${key}}}`, 'g');
     result = result.replace(regex, data[key] || '');
   });
-  
+
   // Handle conditional blocks (basic implementation)
   result = result.replace(/{{#if\s+(\w+)}}([\s\S]*?){{\/if}}/g, (match, condition, content) => {
     return data[condition] ? content : '';
   });
-  
+
   return result.trim();
 }
 
 // Format booking data for templates
 function formatBookingData(payload: NotificationPayload) {
   const { booking, deal, business, user } = payload.data;
-  
+
   const bookingDate = booking?.booking_date ? new Date(booking.booking_date) : null;
-  
+
   return {
-    customer_name: booking?.customer_name || user?.name || 'Client',
+    customer_name: booking?.customer_name || user?.full_name || 'Client',
     deal_title: deal?.title || 'Service',
     business_name: business?.name || 'Salon',
     business_address: business?.address || '',
@@ -261,14 +260,14 @@ export async function sendNotification(payload: NotificationPayload): Promise<bo
 
 // Email notification handler (placeholder)
 async function sendEmailNotification(
-  payload: NotificationPayload, 
-  template: any, 
+  payload: NotificationPayload,
+  template: any,
   data: any
 ): Promise<void> {
-  const subject = payload.template_override?.subject || 
-                 replaceTemplateVariables(template.subject, data);
-  const body = payload.template_override?.body || 
-               replaceTemplateVariables(template.email, data);
+  const subject = payload.template_override?.subject ||
+    replaceTemplateVariables(template.subject, data);
+  const body = payload.template_override?.body ||
+    replaceTemplateVariables(template.email, data);
 
   console.log('📧 EMAIL NOTIFICATION:', {
     to: payload.recipient_id,
@@ -277,41 +276,33 @@ async function sendEmailNotification(
     type: payload.type
   });
 
-  // TODO: Integrate with email service provider (SendGrid, Mailgun, etc.)
-  // Example:
-  // await emailProvider.send({
-  //   to: recipientEmail,
-  //   subject,
-  //   html: body
-  // });
+  // NOTE: In production, this should be handled by a Supabase Edge Function
+  // to keep API keys secure and centralized.
+  // Example: 
+  // await supabase.functions.invoke('send-email', { body: { ... } });
 }
 
-// SMS notification handler (placeholder)
+// SMS notification handler
 async function sendSMSNotification(
-  payload: NotificationPayload, 
-  template: any, 
+  payload: NotificationPayload,
+  template: any,
   data: any
 ): Promise<void> {
   const message = replaceTemplateVariables(template.sms, data);
 
-  console.log('📱 SMS NOTIFICATION:', {
+  console.log('📱 [NotificationService] SMS:', {
     to: payload.recipient_id,
     message,
     type: payload.type
   });
 
-  // TODO: Integrate with SMS service provider (Twilio, etc.)
-  // Example:
-  // await smsProvider.send({
-  //   to: recipientPhone,
-  //   body: message
-  // });
+  // NOTE: In production, use an Edge Function with Twilio or similar.
 }
 
 // In-app notification handler
 async function sendInAppNotification(
-  payload: NotificationPayload, 
-  template: any, 
+  payload: NotificationPayload,
+  template: any,
   data: any
 ): Promise<void> {
   const title = replaceTemplateVariables(template.subject, data);
@@ -338,7 +329,7 @@ async function sendInAppNotification(
         related_booking_id: payload.data?.booking?.id || null,
         related_deal_id: payload.data?.deal?.id || null,
         related_business_id: payload.data?.business?.id || null
-      });
+      } as any);
 
     if (error) {
       console.error('Error storing in-app notification:', error);
@@ -458,9 +449,9 @@ export async function getUserNotificationPreferences(userId: string): Promise<No
     }
 
     const channels: NotificationChannelType[] = ['in_app'];
-    if (prefs.push_enabled) channels.push('push');
-    if (prefs.email_enabled) channels.push('email');
-    if (prefs.sms_enabled) channels.push('sms');
+    if ((prefs as any).push_enabled) channels.push('push');
+    if ((prefs as any).email_enabled) channels.push('email');
+    if ((prefs as any).sms_enabled) channels.push('sms');
 
     return channels;
   } catch (error) {
@@ -471,13 +462,13 @@ export async function getUserNotificationPreferences(userId: string): Promise<No
 
 // Convenience functions for common notification types
 export async function sendBookingConfirmation(
-  userId: string, 
-  booking: any, 
-  deal: any, 
+  userId: string,
+  booking: any,
+  deal: any,
   business: any
 ): Promise<boolean> {
   const channels = await getUserNotificationPreferences(userId);
-  
+
   return sendNotification({
     type: 'booking_confirmation',
     recipient_id: userId,
@@ -487,14 +478,14 @@ export async function sendBookingConfirmation(
 }
 
 export async function sendBookingReminder(
-  userId: string, 
-  booking: any, 
-  deal: any, 
+  userId: string,
+  booking: any,
+  deal: any,
   business: any,
   timeUntil: string
 ): Promise<boolean> {
   const channels = await getUserNotificationPreferences(userId);
-  
+
   return sendNotification({
     type: 'booking_reminder',
     recipient_id: userId,
@@ -504,14 +495,14 @@ export async function sendBookingReminder(
 }
 
 export async function sendBookingCancellation(
-  userId: string, 
-  booking: any, 
-  deal: any, 
+  userId: string,
+  booking: any,
+  deal: any,
   business: any,
   cancellationFee?: number
 ): Promise<boolean> {
   const channels = await getUserNotificationPreferences(userId);
-  
+
   return sendNotification({
     type: 'booking_cancellation',
     recipient_id: userId,
@@ -521,25 +512,25 @@ export async function sendBookingCancellation(
 }
 
 export async function sendBookingRescheduled(
-  userId: string, 
-  booking: any, 
-  deal: any, 
+  userId: string,
+  booking: any,
+  deal: any,
   business: any,
   oldDate: string,
   newDate: string
 ): Promise<boolean> {
   const channels = await getUserNotificationPreferences(userId);
-  
+
   return sendNotification({
     type: 'booking_rescheduled',
     recipient_id: userId,
     channels,
-    data: { 
-      booking, 
-      deal, 
-      business, 
+    data: {
+      booking,
+      deal,
+      business,
       old_booking_date: oldDate,
-      new_booking_date: newDate 
+      new_booking_date: newDate
     }
   });
 }
@@ -549,7 +540,7 @@ export async function markNotificationAsRead(notificationId: string): Promise<bo
   try {
     const { error } = await supabase
       .from('notifications')
-      .update({ is_read: true })
+      .update({ is_read: true } as any)
       .eq('id', notificationId);
 
     if (error) {

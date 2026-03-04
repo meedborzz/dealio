@@ -25,8 +25,12 @@ if (preferences.theme === 'dark') {
 document.documentElement.lang = preferences.language;
 document.documentElement.dir = preferences.language === 'ar' ? 'rtl' : 'ltr';
 
+import { AuthProvider } from './contexts/AuthContext';
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </StrictMode>
 );
