@@ -2,6 +2,7 @@ import React from 'react';
 import { Hand, Scissors, Sparkles, Heart, Droplets, Palette, Eye, Zap, Dumbbell } from 'lucide-react';
 import { t, type Language } from '@/lib/i18n';
 import { AVAILABLE_CATEGORIES } from '@/lib/preferences';
+import { SetupTip } from './SetupTip';
 
 interface CategoriesStepProps {
   language: Language;
@@ -51,24 +52,20 @@ export const CategoriesStep: React.FC<CategoriesStepProps> = ({
               <button
                 key={category.id}
                 onClick={() => onToggle(category.id)}
-                className={`p-3 rounded-xl border-2 transition-all ${
-                  isSelected
+                className={`p-3 rounded-xl border-2 transition-all ${isSelected
                     ? 'border-primary bg-primary/5'
                     : 'border-border bg-card hover:border-primary/30'
-                }`}
+                  }`}
               >
                 <div className="flex flex-col items-center gap-2">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    isSelected ? 'bg-primary/10' : 'bg-muted'
-                  }`}>
-                    {IconComponent && <IconComponent className={`w-5 h-5 ${
-                      isSelected ? 'text-primary' : 'text-muted-foreground'
-                    }`} />}
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isSelected ? 'bg-primary/10' : 'bg-muted'
+                    }`}>
+                    {IconComponent && <IconComponent className={`w-5 h-5 ${isSelected ? 'text-primary' : 'text-muted-foreground'
+                      }`} />}
                   </div>
                   <p
-                    className={`text-xs font-medium ${
-                      isSelected ? 'text-primary' : 'text-foreground'
-                    }`}
+                    className={`text-xs font-medium ${isSelected ? 'text-primary' : 'text-foreground'
+                      }`}
                   >
                     {category.label}
                   </p>
@@ -79,11 +76,7 @@ export const CategoriesStep: React.FC<CategoriesStepProps> = ({
         </div>
       </div>
 
-      <div className="p-3 bg-primary/5 border border-primary/20 rounded-lg flex-shrink-0">
-        <p className="text-xs text-foreground text-center font-medium">
-          {t('setup.categories.tip', language)}
-        </p>
-      </div>
+      <SetupTip text={t('setup.categories.tip', language)} />
     </div>
   );
 };

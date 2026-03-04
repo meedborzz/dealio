@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Scissors, Hand, Waves, Sparkles, Filter, Flame } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 import { useDeals } from '../hooks/useDeals';
 import { useNotifications } from '../hooks/useNotifications';
@@ -15,11 +16,9 @@ import SearchFilters from '../components/SearchFilters';
 import SkeletonLoader from '../components/SkeletonLoader';
 import ErrorState from '../components/ErrorState';
 import { HomeHeader } from '@/components/home/HomeHeader';
-import { OfferHeroCarousel } from '@/components/home/OfferHeroCarousel';
 import { CategoryChips } from '@/components/home/CategoryChips';
 import { OfferCard } from '@/components/home/OfferCard';
 import { BusinessCardSmall } from '@/components/home/BusinessCardSmall';
-import { QuickFilters } from '@/components/home/QuickFilters';
 import { OfferSlider } from '@/components/home/OfferSlider';
 import { AdvertisingBanner } from '@/components/home/AdvertisingBanner';
 import { InstallButton } from '../components/InstallButton';
@@ -35,33 +34,23 @@ const HomePage: React.FC = () => {
   const location = useLocation();
   const { unreadCount } = useNotifications();
 
-  // Handle post-login redirection
+  // Handle role-based redirection
   useEffect(() => {
-    // Only run if we came specifically from a login event
-    if (location.state?.fromLogin) {
-      console.log('🔄 HomePage Redirect Check:', {
-        loading,
-        hasUser: !!user,
-        hasProfile: !!userProfile,
-        role: userProfile?.role
-      });
-
-      // Wait for Auth loading to finish
-      if (!loading && user) {
-        if (userProfile?.role === 'admin') {
-          console.log('➡️ Redirecting to Admin Dashboard');
-          navigate('/admin', { replace: true });
-        } else if (userProfile?.role === 'business_owner') {
-          console.log('➡️ Redirecting to Business Dashboard');
-          navigate('/business', { replace: true });
-        } else if (userProfile) {
-          // Only clear state if we definitely have a profile and it's not a special role
-          console.log('➡️ Staying on Home Page (Customer)');
-          navigate('/', { replace: true, state: {} });
-        }
+    // Wait for Auth loading to finish
+    if (!loading && user) {
+      if (userProfile?.role === 'admin') {
+        console.log('➡️ Proactive Redirect: Admin Dashboard');
+        navigate('/admin', { replace: true });
+      } else if (userProfile?.role === 'business_owner') {
+        console.log('➡️ Proactive Redirect: Business Dashboard');
+        navigate('/business', { replace: true });
+      } else if (location.state?.fromLogin) {
+        // Specifically for clients after login, clear the state
+        console.log('➡️ Login Redirection: Staying on Home Page (Customer)');
+        navigate('/', { replace: true, state: {} });
       }
     }
-  }, [user, userProfile, loading, location, navigate]);
+  }, [user, userProfile, loading, navigate, location.state]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
@@ -158,12 +147,12 @@ const HomePage: React.FC = () => {
     if (filters.categories.length > 0) {
       filtered = filtered.filter(deal => {
         const businessCategory = deal.business?.category || deal.businesses?.category;
-        return filters.categories.includes(businessCategory);
+        return filters.categories.includes(businessCategory || '');
       });
     } else if (userProfile?.categories && userProfile.categories.length > 0 && !selectedCategory) {
       filtered = filtered.filter(deal => {
         const businessCategory = deal.business?.category || deal.businesses?.category;
-        return userProfile.categories.includes(businessCategory);
+        return userProfile.categories?.includes(businessCategory || '');
       });
     }
 
@@ -211,8 +200,8 @@ const HomePage: React.FC = () => {
   const calculateDistance = (deal: Deal): number => {
     if (!userLocation) return 0;
 
-    const lat = deal.business?.latitude || deal.businesses?.latitude;
-    const lng = deal.business?.longitude || deal.businesses?.longitude;
+    const lat = deal.business?.latitude || deal.businesses?.latitude || deal.business?.coordinates?.lat || deal.businesses?.coordinates?.lat;
+    const lng = deal.business?.longitude || deal.businesses?.longitude || deal.business?.coordinates?.lng || deal.businesses?.coordinates?.lng;
 
     if (!lat || !lng) return 0;
 
@@ -253,7 +242,7 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-bg-primary">
       <HomeHeader
         userName={userProfile?.full_name?.split(' ')[0]}
         userAvatar={userProfile?.avatar_url}
@@ -355,16 +344,34 @@ const HomePage: React.FC = () => {
               <SkeletonLoader type="deal-card" count={3} />
             </div>
           ) : forYouDeals.length > 0 ? (
-            <div className="space-y-3">
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{
+                visible: {
+                  transition: {
+                    staggerChildren: 0.1
+                  }
+                }
+              }}
+              className="space-y-3"
+            >
               {forYouDeals.map((deal) => (
-                <OfferCard
+                <motion.div
                   key={deal.id}
-                  deal={deal}
-                  onBook={() => handleBookDeal(deal)}
-                  distance={userLocation ? calculateDistance(deal) : undefined}
-                />
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                  }}
+                >
+                  <OfferCard
+                    deal={deal}
+                    onBook={() => handleBookDeal(deal)}
+                    distance={userLocation ? calculateDistance(deal) : undefined}
+                  />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           ) : (
             <Card className="p-8 text-center">
               <p className="text-muted-foreground">
@@ -446,7 +453,7 @@ const HomePage: React.FC = () => {
 
       {showBookingModal && selectedDeal && (
         <BookingModal
-          deal={selectedDeal}
+          deal={selectedDeal as any}
           isOpen={showBookingModal}
           onClose={() => {
             setShowBookingModal(false);

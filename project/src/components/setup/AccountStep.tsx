@@ -2,6 +2,7 @@ import React from 'react';
 import { UserCircle } from 'lucide-react';
 import { t, type Language } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
+import { SetupTip } from './SetupTip';
 
 interface AccountStepProps {
   language: Language;
@@ -53,15 +54,7 @@ export const AccountStep: React.FC<AccountStepProps> = ({
         </Button>
       </div>
 
-      <div className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
-        <p className="text-xs text-foreground text-center font-medium">
-          {language === 'ar'
-            ? '💡 جيد أن تعرف: شارك تجربتك واكسب مكافآت - كل تقييم وحجز يساهم في تحسين المجتمع ويكسبك نقاط'
-            : language === 'fr'
-            ? '💡 Bon à savoir : Partagez votre expérience et gagnez - chaque avis et réservation améliore la communauté'
-            : '💡 Good to know: Share your experience and earn - every review and booking improves the community'}
-        </p>
-      </div>
+      <SetupTip text={t('setup.account.tip', language)} />
     </div>
   );
 };

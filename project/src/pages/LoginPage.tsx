@@ -15,7 +15,7 @@ interface LoginPageProps {
 
 const LoginPage: React.FC<LoginPageProps> = () => {
   const { signIn, user, userProfile, getRedirectPath, loading } = useAuth();
-  const { preferences } = usePreferences();
+  const { preferences, updatePreferences } = usePreferences();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +36,9 @@ const LoginPage: React.FC<LoginPageProps> = () => {
         setError((signInError as any).message || t('auth.login.error', preferences.language));
         setIsLoading(false);
       } else {
-        // Force a full page reload to ensure clean state
+        // Successful login: Mark setup as completed for this device
+        updatePreferences({ setupCompleted: true });
+
         // 1. Check for valid deep link redirect
         const storedRedirect = getRedirectPath();
         if (storedRedirect && !storedRedirect.startsWith('/admin') && !storedRedirect.startsWith('/business')) {
@@ -45,8 +47,6 @@ const LoginPage: React.FC<LoginPageProps> = () => {
         }
 
         // 2. Fetch role manually to decide destination
-        // We do this manually because useAuth state might not be updated yet
-        // and we are about to reload the page anyway.
         if (data?.user) {
           const { data: profile } = await supabase
             .from('user_profiles')

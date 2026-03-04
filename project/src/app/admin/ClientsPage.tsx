@@ -150,26 +150,26 @@ const AdminClientsPage: React.FC = () => {
       {/* Search and Filter */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <CardTitle className="flex items-center">
               <Users className="h-5 w-5 mr-2" />
               Clients ({totalCount})
             </CardTitle>
-            <div className="flex space-x-3">
-              <div className="relative">
+            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 w-full md:w-auto">
+              <div className="relative w-full sm:w-64">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Rechercher un client..."
-                  className="pl-10 w-64"
+                  className="pl-10 w-full"
                 />
               </div>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-3 py-2 border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="px-3 py-2 border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-background text-foreground w-full sm:w-auto"
               >
                 <option value="recent">Plus récents</option>
                 <option value="loyalty">Points fidélité</option>
@@ -203,39 +203,39 @@ const AdminClientsPage: React.FC = () => {
           {clients.map((client) => {
             const loyaltyInfo = getLoyaltyLevel(client.loyalty_points || 0);
             const clientTypeEmoji = getClientTypeEmoji(client.completed_bookings_count || 0, client.loyalty_points || 0);
-            
+
             return (
               <Card key={client.id}>
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-3 sm:space-y-0 sm:space-x-4 w-full md:w-auto text-center sm:text-left">
+                      <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20 shrink-0 mx-auto sm:mx-0">
                         <span className="text-xl">{clientTypeEmoji}</span>
                       </div>
-                      <div>
-                        <div className="flex items-center space-x-2 mb-2">
-                          <h4 className="font-bold text-foreground text-lg">{client.full_name || 'Nom non renseigné'}</h4>
-                          <Badge variant="secondary">
+                      <div className="flex-1 min-w-0 flex flex-col items-center sm:items-start w-full">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                          <h4 className="font-bold text-foreground text-lg truncate w-full sm:w-auto">{client.full_name || 'Nom non renseigné'}</h4>
+                          <Badge variant="secondary" className="shrink-0 shadow-sm border-none bg-primary/5 text-primary">
                             {loyaltyInfo.level}
                           </Badge>
                         </div>
                         {client.phone && (
-                          <div className="flex items-center space-x-2 mb-1">
-                            <Phone className="h-3 w-3 text-muted-foreground" />
-                            <span className="text-muted-foreground text-sm">{client.phone}</span>
+                          <div className="flex items-center justify-center sm:justify-start space-x-2 mb-1.5 w-full">
+                            <Phone className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                            <span className="text-muted-foreground text-sm truncate">{client.phone}</span>
                           </div>
                         )}
-                        <div className="flex items-center space-x-2">
-                          <Calendar className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-muted-foreground text-sm">
+                        <div className="flex items-center justify-center sm:justify-start space-x-2 w-full">
+                          <Calendar className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                          <span className="text-muted-foreground text-sm truncate">
                             Inscrit le {format(parseISO(client.created_at || new Date().toISOString()), 'dd MMM yyyy', { locale: fr })}
                           </span>
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="text-right">
-                      <div className="grid grid-cols-2 gap-4 mb-4">
+
+                    <div className="flex flex-col sm:flex-row items-center justify-between md:justify-end gap-4 w-full md:w-auto border-t md:border-t-0 border-border pt-4 md:pt-0 mt-4 md:mt-0">
+                      <div className="grid grid-cols-2 gap-4 w-full sm:w-auto">
                         <div className="text-center">
                           <p className="text-xl font-bold text-primary">{formatCount(client.completed_bookings_count)}</p>
                           <p className="text-xs text-muted-foreground">Réservations</p>
@@ -246,8 +246,9 @@ const AdminClientsPage: React.FC = () => {
                         </div>
                       </div>
                       <Button
-                        variant="outline"
+                        variant="default"
                         size="sm"
+                        className="w-full sm:w-auto shadow-sm"
                         onClick={() => {
                           setSelectedClient(client);
                           setShowDetails(true);
@@ -318,8 +319,8 @@ const AdminClientsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
-                <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-muted/30 p-4 rounded-xl border border-border/50">
                   <h4 className="font-semibold mb-3">Informations personnelles</h4>
                   <div className="space-y-2">
                     {selectedClient.phone && (
@@ -341,7 +342,7 @@ const AdminClientsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div>
+                <div className="bg-muted/30 p-4 rounded-xl border border-border/50">
                   <h4 className="font-semibold mb-3">Statistiques</h4>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">

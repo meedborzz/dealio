@@ -2,6 +2,7 @@ import React from 'react';
 import { Bell } from 'lucide-react';
 import { t, type Language } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
+import { SetupTip } from './SetupTip';
 
 interface NotificationsStepProps {
   language: Language;
@@ -38,11 +39,7 @@ export const NotificationsStep: React.FC<NotificationsStepProps> = ({
         </Button>
       </div>
 
-      <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
-        <p className="text-sm text-foreground text-center">
-          {t('setup.notifications.tip', language)}
-        </p>
-      </div>
+      <SetupTip text={t('setup.notifications.tip', language)} />
     </div>
   );
 };

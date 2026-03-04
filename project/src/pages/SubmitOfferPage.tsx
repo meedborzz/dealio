@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { Upload, MapPin, Calendar, DollarSign, Tag, Building2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, MapPin, Calendar, DollarSign, Tag, Building2, CheckCircle, AlertCircle, Scissors, Sparkles, Waves, Eye } from 'lucide-react';
 import { getAvailableCategories } from '../config/servicePresets';
 import { getAvailableCities } from '../config/location';
 
 // Derive categories and cities from real config
-const CATEGORY_ICONS: Record<string, string> = {
-  'Coiffure': '✂️',
-  'Soins du Visage': '✨',
-  'Onglerie': '💅',
-  'Spa & Corps': '🧖',
-  'Esthetique & Regard': '👁️',
-  'Maquillage': '💄',
-  'Bien-être & Minceur': '🌿',
-  'Forfaits Spéciaux': '🎁',
+const CATEGORY_ICONS: Record<string, any> = {
+  'Coiffure': Scissors,
+  'Soins du Visage': Sparkles,
+  'Onglerie': Sparkles,
+  'Spa & Corps': Waves,
+  'Esthetique & Regard': Eye,
+  'Maquillage': Sparkles,
+  'Bien-être & Minceur': Sparkles,
+  'Forfaits Spéciaux': Tag,
 };
-const categories = getAvailableCategories().map(c => ({ id: c.id, name: c.name, icon: CATEGORY_ICONS[c.id] || '🏷️' }));
+const categories = getAvailableCategories().map(c => ({ id: c.id, name: c.name, icon: CATEGORY_ICONS[c.id] || Tag }));
 const cities = getAvailableCities().map(c => c.name);
 
 import { supabase } from '../lib/supabase';
@@ -268,7 +268,7 @@ const SubmitOfferPage: React.FC = () => {
                       <option value="">Sélectionnez une catégorie</option>
                       {categories.map(category => (
                         <option key={category.id} value={category.id}>
-                          {category.icon} {category.name}
+                          {category.name}
                         </option>
                       ))}
                     </select>
@@ -370,8 +370,8 @@ const SubmitOfferPage: React.FC = () => {
                           type="button"
                           onClick={() => setSelectedTier(tier)}
                           className={`p-4 rounded-xl border-2 transition-all ${selectedTier === tier
-                              ? 'border-primary bg-primary/5'
-                              : 'border-gray-200 hover:border-primary/50'
+                            ? 'border-primary bg-primary/5'
+                            : 'border-gray-200 hover:border-primary/50'
                             }`}
                         >
                           <div className="text-2xl font-bold text-gray-900">{tier}%</div>

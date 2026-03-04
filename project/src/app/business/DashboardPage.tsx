@@ -157,12 +157,14 @@ const BusinessDashboard: React.FC = () => {
           .in('status', ['pending', 'requested'])
       ]);
 
+      const validRevenueStatuses = ['completed', 'confirmed', 'checked_in'];
+
       const currentRevenue = (currentPeriodBookings || [])
-        .filter(b => b.status === 'completed')
+        .filter(b => validRevenueStatuses.includes(b.status || ''))
         .reduce((sum, b) => sum + (b.total_price || 0), 0);
 
       const previousRevenue = (prevPeriodBookings || [])
-        .filter(b => b.status === 'completed')
+        .filter(b => validRevenueStatuses.includes(b.status || ''))
         .reduce((sum, b) => sum + (b.total_price || 0), 0);
 
       const monthRevenue = await fetchMonthRevenue(dealIds);
@@ -201,7 +203,7 @@ const BusinessDashboard: React.FC = () => {
       .from('bookings')
       .select('total_price')
       .in('deal_id', dealIds)
-      .eq('status', 'completed')
+      .in('status', ['completed', 'confirmed', 'checked_in'])
       .gte('booking_date', monthStart)
       .lte('booking_date', today);
 

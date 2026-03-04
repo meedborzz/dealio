@@ -34,7 +34,7 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
   };
 
   return (
-    <div className="bg-card border-b border-border px-4 py-4 relative z-40">
+    <div className="glass-header px-4 py-4 relative z-40">
       <div className="safe-area-top" />
       <div className="flex items-center justify-between mb-3">
         <Button

@@ -24,6 +24,7 @@
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "dotenv": "^17.2.2",
+    "framer-motion": "^12.34.5",
     "lucide-react": "^0.344.0",
     "pigeon-maps": "^0.22.1",
     "react": "^18.3.1",

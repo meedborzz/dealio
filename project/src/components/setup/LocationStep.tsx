@@ -3,6 +3,7 @@ import { MapPin, Loader2 } from 'lucide-react';
 import { t, type Language } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { AVAILABLE_CITIES } from '@/lib/preferences';
+import { SetupTip } from './SetupTip';
 
 interface LocationStepProps {
   language: Language;
@@ -55,11 +56,10 @@ export const LocationStep: React.FC<LocationStepProps> = ({
             <button
               key={city}
               onClick={() => onCitySelect(city)}
-              className={`w-full p-3 rounded-lg border transition-all text-left ${
-                selectedCity === city
+              className={`w-full p-3 rounded-lg border transition-all text-left ${selectedCity === city
                   ? 'border-primary bg-primary/5'
                   : 'border-border bg-card hover:border-primary/50'
-              }`}
+                }`}
             >
               <p className="font-medium text-foreground">{city}</p>
             </button>
@@ -119,11 +119,7 @@ export const LocationStep: React.FC<LocationStepProps> = ({
         </Button>
       </div>
 
-      <div className="p-3 bg-muted/50 rounded-lg">
-        <p className="text-xs text-muted-foreground text-center">
-          {t('setup.location.tip', language)}
-        </p>
-      </div>
+      <SetupTip text={t('setup.location.tip', language)} />
     </div>
   );
 };

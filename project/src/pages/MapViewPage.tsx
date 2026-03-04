@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ArrowLeft, MapPin, Navigation, X, Building2, Star, Phone, MessageSquare, Layers, Eye, Filter, Map as MapIcon, List, Grid, Sparkles, Clock, Mail, Maximize, Minimize } from 'lucide-react';
+import { ArrowLeft, MapPin, Navigation, X, Building2, Star, Phone, MessageSquare, Layers, Eye, Filter, Map as MapIcon, List, Grid, Sparkles, Clock, Mail, Maximize, Minimize, Scissors, Waves, Droplets, Zap, LucideIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Map, Marker, Overlay } from 'pigeon-maps';
 import { supabase } from '../lib/supabase';
@@ -10,98 +10,106 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-interface BusinessWithDeals extends Business {
+interface BusinessWithDeals extends Omit<Business, 'coordinates'> {
   deals?: Deal[];
   activeDealsCount?: number;
+  coordinates?: [number, number];
 }
 
 // Default center: Casablanca, Morocco
 const defaultCenter: [number, number] = [33.5731, -7.5898];
 
-// Enhanced category configuration with beautiful colors
-const categoryConfig = {
+interface CategoryInfo {
+  name: string;
+  color: string;
+  bgColor: string;
+  icon: LucideIcon;
+  description: string;
+}
+
+const categoryConfig: Record<string, CategoryInfo> = {
   'Coiffure': {
     name: 'Coiffure',
     color: '#EC4899',
     bgColor: '#FDF2F8',
-    emoji: '✂️',
+    icon: Scissors,
     description: 'Coupes & coiffage'
   },
   'Ongles': {
     name: 'Ongles',
     color: '#8B5CF6',
     bgColor: '#F3F4F6',
-    emoji: '💅',
+    icon: Sparkles,
     description: 'Manucure & nail art'
   },
   'Massage': {
     name: 'Massage',
     color: '#10B981',
     bgColor: '#ECFDF5',
-    emoji: '💆‍♀️',
+    icon: Droplets,
     description: 'Relaxation & bien-être'
   },
   'Spa': {
     name: 'Spa',
     color: '#06B6D4',
     bgColor: '#F0F9FF',
-    emoji: '🛁',
+    icon: Waves,
     description: 'Hammam & soins spa'
   },
   'Esthetique': {
     name: 'Esthétique',
     color: '#F59E0B',
     bgColor: '#FFFBEB',
-    emoji: '✨',
+    icon: Sparkles,
     description: 'Soins visage & corps'
   },
   'Barbier': {
     name: 'Barbier',
     color: '#6B7280',
     bgColor: '#F9FAFB',
-    emoji: '🧔',
+    icon: Scissors,
     description: 'Coiffure homme'
   },
   'Manucure': {
     name: 'Manucure',
     color: '#EF4444',
     bgColor: '#FEF2F2',
-    emoji: '💅',
+    icon: Sparkles,
     description: 'Soins des ongles'
   },
   'Epilation': {
     name: 'Épilation',
     color: '#F97316',
     bgColor: '#FFF7ED',
-    emoji: '⚡',
+    icon: Zap,
     description: 'Épilation laser & cire'
   },
   'Maquillage': {
     name: 'Maquillage',
     color: '#D946EF',
     bgColor: '#FAF5FF',
-    emoji: '💄',
+    icon: Sparkles,
     description: 'Maquillage pro'
   },
   'Fitness': {
     name: 'Fitness',
     color: '#059669',
     bgColor: '#ECFDF5',
-    emoji: '🏋️‍♀️',
+    icon: Zap,
     description: 'Sport & yoga'
   },
   'Sourcils': {
     name: 'Sourcils & Cils',
     color: '#7C3AED',
     bgColor: '#F5F3FF',
-    emoji: '👁️',
+    icon: Eye,
     description: 'Restructuration'
   },
   'Soins': {
     name: 'Soins Corps',
     color: '#0EA5E9',
     bgColor: '#F0F9FF',
-    emoji: '💧',
+    icon: Droplets,
     description: 'Gommages & hydratation'
   }
 };
@@ -147,7 +155,7 @@ const MapViewPage: React.FC = () => {
 
       console.log('🔍 Fetching businesses for map...');
 
-      const { data: businessesData, error: businessesError } = await supabase
+      const { data, error } = await supabase
         .from('businesses')
         .select(`
           id,
@@ -160,12 +168,13 @@ const MapViewPage: React.FC = () => {
           category,
           rating,
           review_count,
-         coordinates,
-         status
+          coordinates,
+          status
         `)
-        .in('status', ['approved', 'pending']); // Include pending businesses too
+        .in('status', ['approved', 'pending']);
 
-      if (businessesError) throw businessesError;
+      if (error) throw error;
+      const businessesData = data as any[] | null;
 
       console.log('📊 Fetched businesses:', businessesData?.length || 0);
       businessesData?.forEach(b => {
@@ -454,7 +463,7 @@ const MapViewPage: React.FC = () => {
                             position: 'relative'
                           }}
                         >
-                          {categoryInfo?.emoji || '🏪'}
+                          {categoryInfo?.icon ? React.createElement(categoryInfo.icon, { className: "w-5 h-5 text-white" }) : <Building2 className="w-5 h-5 text-white" />}
                         </div>
 
                         {/* Deal count badge */}
@@ -570,7 +579,10 @@ const MapViewPage: React.FC = () => {
                   className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg"
                   style={{ backgroundColor: getMarkerColor(selectedBusiness.category) }}
                 >
-                  {categoryConfig[selectedBusiness.category as keyof typeof categoryConfig]?.emoji || '🏪'}
+                  {(() => {
+                    const iconComp = selectedBusiness ? categoryConfig[selectedBusiness.category]?.icon : null;
+                    return iconComp ? React.createElement(iconComp, { className: "w-8 h-8 text-white" }) : <Building2 className="w-8 h-8 text-white" />;
+                  })()}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
@@ -768,8 +780,8 @@ const MapViewPage: React.FC = () => {
                       setShowCategoryLegend(false);
                     }}
                     className={`w-full p-2 rounded-lg border transition-all duration-200 text-left ${selectedCategory === category
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border hover:border-primary/30 hover:bg-muted/30'
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border hover:border-primary/30 hover:bg-muted/30'
                       }`}
                   >
                     <div className="flex items-center space-x-3">
@@ -777,7 +789,7 @@ const MapViewPage: React.FC = () => {
                         className="w-8 h-8 rounded-md flex items-center justify-center text-white text-sm"
                         style={{ backgroundColor: config?.color || '#6B7280' }}
                       >
-                        {config?.emoji || '🏪'}
+                        {config?.icon ? React.createElement(config.icon, { className: "w-4 h-4 text-white" }) : <Building2 className="w-4 h-4 text-white" />}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
@@ -836,7 +848,10 @@ const MapViewPage: React.FC = () => {
                     className="w-6 h-6 rounded-md flex items-center justify-center text-white text-xs"
                     style={{ backgroundColor: getMarkerColor(selectedCategory) }}
                   >
-                    {categoryConfig[selectedCategory as keyof typeof categoryConfig]?.emoji}
+                    {(() => {
+                      const iconComp = selectedCategory ? categoryConfig[selectedCategory]?.icon : null;
+                      return iconComp ? React.createElement(iconComp, { className: "w-4 h-4 text-white" }) : <Building2 className="w-4 h-4 text-white" />;
+                    })()}
                   </div>
                   <span className="text-sm font-medium text-foreground">
                     Filtré: {selectedCategory}

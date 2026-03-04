@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,27 +11,21 @@
   --brand-light: #d4b5d6;
   --g1: #b892b9;
   --g2: #9a7a9b;
-  --ink-900: #0A0A0A;
-  --ink-700: #222;
-  --ink-600: #3A3A3A;
-  --ink-500: #555;
-  --ink-400: #6F6F6F;
-  --ui-bg: #fff;
-  --ui-soft: #F7F7F7;
-  --ui-line: #EAEAEA;
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-headline: 'Outfit', sans-serif;
 
-  /* Enhanced theme variables */
+  /* Enhanced theme variables - Light Mode */
   --text-primary: #0A0A0A;
-  --text-secondary: #555;
+  --text-secondary: #555555;
   --bg-primary: #FFFFFF;
   --bg-secondary: #F7F7F7;
   --border-primary: #EAEAEA;
 
   /* Safe Area Insets for iOS notch and Android gesture areas */
-  --safe-area-inset-top: env(safe-area-inset-top);
-  --safe-area-inset-right: env(safe-area-inset-right);
-  --safe-area-inset-bottom: env(safe-area-inset-bottom);
-  --safe-area-inset-left: env(safe-area-inset-left);
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
 }
 
 .dark {
@@ -382,10 +378,21 @@
 }
 
 @layer components {
+  .glass-header {
+    @apply bg-white/70 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50;
+  }
+
+  .glass-card {
+    @apply bg-white/50 backdrop-blur-md border border-white/20 shadow-sm relative overflow-hidden;
+  }
+
+  .brand-gradient {
+    @apply bg-gradient-to-r from-[#b892b9] to-[#9a7a9b] text-white shadow-md;
+  }
 
   /* Mobile UI Components */
   .mobile-header {
-    @apply sticky top-0 z-40 bg-ui-bg/95 backdrop-blur-sm border-b border-ui-line;
+    @apply sticky top-0 z-40 glass-header;
   }
 
   .mobile-stat-card {

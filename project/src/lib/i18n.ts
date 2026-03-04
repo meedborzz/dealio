@@ -31,9 +31,9 @@ export const translations: Translations = {
     en: 'Choose your language',
   },
   'setup.language.tip': {
-    ar: '💡 جيد أن تعرف: تقييمات حقيقية من عملاء موثوقين لمساعدتك في اختيار الأفضل',
-    fr: '💡 Bon à savoir : Avis authentiques de clients vérifiés pour vous aider à choisir le meilleur',
-    en: '💡 Good to know: Real reviews from verified customers to help you choose the best',
+    ar: 'تقييمات حقيقية من عملاء موثوقين لمساعدتك في اختيار الأفضل',
+    fr: 'Avis authentiques de clients vérifiés pour vous aider à choisir le meilleur',
+    en: 'Real reviews from verified customers to help you choose the best',
   },
   'setup.theme.title': {
     ar: 'اختر المظهر',
@@ -56,9 +56,9 @@ export const translations: Translations = {
     en: 'Dark',
   },
   'setup.theme.tip': {
-    ar: '💡 جيد أن تعرف: اكسب نقاط ولاء مع كل حجز واستبدلها بخصومات وخدمات مجانية',
-    fr: '💡 Bon à savoir : Gagnez des points de fidélité à chaque réservation et échangez-les contre des réductions',
-    en: '💡 Good to know: Earn loyalty points with every booking and redeem them for discounts',
+    ar: 'اكسب نقاط ولاء مع كل حجز واستبدلها بخصومات وخدمات مجانية',
+    fr: 'Gagnez des points de fidélité à chaque réservation et échangez-les contre des réductions',
+    en: 'Earn loyalty points with every booking and redeem them for discounts',
   },
   'setup.categories.title': {
     ar: 'ما الذي يهمك؟',
@@ -71,9 +71,9 @@ export const translations: Translations = {
     en: 'Choose at least 3 categories',
   },
   'setup.categories.tip': {
-    ar: '💡 جيد أن تعرف: اكتشف أفضل العروض من صالوناتك المفضلة مع خصومات حصرية تصل إلى 70%',
-    fr: '💡 Bon à savoir : Découvrez les meilleures offres de vos salons préférés avec jusqu\'à 70% de réduction',
-    en: '💡 Good to know: Discover best offers from your favorite salons with up to 70% off',
+    ar: 'اكتشف أفضل العروض من صالوناتك المفضلة مع خصومات حصرية تصل إلى 70%',
+    fr: 'Découvrez les meilleures offres de vos salons préférés avec jusqu\'à 70% de réduction',
+    en: 'Discover best offers from your favorite salons with up to 70% off',
   },
   'setup.location.title': {
     ar: 'شاهد العروض القريبة منك',
@@ -86,9 +86,9 @@ export const translations: Translations = {
     en: 'Allow location access for local offers',
   },
   'setup.location.tip': {
-    ar: '💡 جيد أن تعرف: نظام حجز سهل يفيد الطرفين - احجز بسرعة والصالونات تدير المواعيد بكفاءة',
-    fr: '💡 Bon à savoir : Système de réservation facile bénéfique pour tous - réservez vite, salons gèrent efficacement',
-    en: '💡 Good to know: Easy booking system benefits both sides - book fast, salons manage efficiently',
+    ar: 'نظام حجز سهل يفيد الطرفين - احجز بسرعة والصالونات تدير المواعيد بكفاءة',
+    fr: 'Système de réservation facile bénéfique pour tous - réservez vite, salons gèrent efficacement',
+    en: 'Easy booking system benefits both sides - book fast, salons manage efficiently',
   },
   'setup.notifications.title': {
     ar: 'ابق على اطلاع',
@@ -101,9 +101,9 @@ export const translations: Translations = {
     en: 'Get last-minute offers and booking updates',
   },
   'setup.notifications.tip': {
-    ar: '💡 جيد أن تعرف: احصل على إشعارات فورية للعروض الحصرية وتأكيدات الحجز لتبقى دائماً على اطلاع',
-    fr: '💡 Bon à savoir : Recevez des notifications instantanées pour les offres exclusives et confirmations de réservation',
-    en: '💡 Good to know: Get instant notifications for exclusive offers and booking confirmations',
+    ar: 'احصل على إشعارات فورية للعروض الحصرية وتأكيدات الحجز لتبقى دائماً على اطلاع',
+    fr: 'Recevez des notifications instantanées pour les offres exclusives et confirmations de réservation',
+    en: 'Get instant notifications for exclusive offers and booking confirmations',
   },
   'setup.install.title': {
     ar: 'قم بتثبيت التطبيق',
@@ -116,9 +116,9 @@ export const translations: Translations = {
     en: 'Get the best experience with our app',
   },
   'setup.install.tip': {
-    ar: '💡 جيد أن تعرف: أصحاب الصالونات يحصلون على لوحة تحكم سهلة لإدارة الحجوزات والعروض والإحصائيات',
-    fr: '💡 Bon à savoir : Les propriétaires de salons ont un tableau de bord facile pour gérer réservations et offres',
-    en: '💡 Good to know: Salon owners get an easy dashboard to manage bookings, offers and analytics',
+    ar: 'أصحاب الصالونات يحصلون على لوحة تحكم سهلة لإدارة الحجوزات والعروض والإحصائيات',
+    fr: 'Les propriétaires de salons ont un tableau de bord facile pour gérer réservations et offres',
+    en: 'Salon owners get an easy dashboard to manage bookings, offers and analytics',
   },
   'setup.account.title': {
     ar: 'الخطوة الأخيرة',
@@ -131,9 +131,9 @@ export const translations: Translations = {
     en: 'Create an account or log in',
   },
   'setup.account.tip': {
-    ar: 'أو تابع كضيف',
-    fr: 'Ou continuez en tant qu\'invité',
-    en: 'Or continue as guest',
+    ar: 'شارك تجربتك واكسب مكافآت - كل تقييم وحجز يساهم في تحسين المجتمع ويكسبك نقاط',
+    fr: 'Partagez votre expérience et gagnez - chaque avis et réservation améliore la communauté',
+    en: 'Share your experience and earn - every review and booking improves the community',
   },
 
   // Common buttons
@@ -446,9 +446,9 @@ export const translations: Translations = {
     en: 'Categories',
   },
   'home.special_offer': {
-    ar: '🎉 عرض خاص',
-    fr: '🎉 Offre Spéciale',
-    en: '🎉 Special Offer',
+    ar: 'عرض خاص',
+    fr: 'Offre Spéciale',
+    en: 'Special Offer',
   },
   'home.promo_text': {
     ar: 'خصم يصل إلى 70% على خدمات التجميل المفضلة لديك',

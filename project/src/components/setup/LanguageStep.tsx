@@ -2,6 +2,7 @@ import React from 'react';
 import { Globe } from 'lucide-react';
 import { t, type Language } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
+import { SetupTip } from './SetupTip';
 
 interface LanguageStepProps {
   language: Language;
@@ -31,11 +32,10 @@ export const LanguageStep: React.FC<LanguageStepProps> = ({ language, onSelect }
           <button
             key={lang.code}
             onClick={() => onSelect(lang.code)}
-            className={`w-full p-4 rounded-xl border-2 transition-all ${
-              language === lang.code
-                ? 'border-primary bg-primary/5'
-                : 'border-border bg-card hover:border-primary/50'
-            }`}
+            className={`w-full p-4 rounded-xl border-2 transition-all ${language === lang.code
+              ? 'border-primary bg-primary/5'
+              : 'border-border bg-card hover:border-primary/50'
+              }`}
           >
             <div className="flex items-center justify-between">
               <div className="text-left">
@@ -52,11 +52,7 @@ export const LanguageStep: React.FC<LanguageStepProps> = ({ language, onSelect }
         ))}
       </div>
 
-      <div className="p-3 bg-muted/50 rounded-lg">
-        <p className="text-xs text-muted-foreground text-center">
-          {t('setup.language.tip', language)}
-        </p>
-      </div>
+      <SetupTip text={t('setup.language.tip', language)} />
     </div>
   );
 };

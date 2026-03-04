@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Globe, Palette, Tag, MapPin, Bell, Download, RefreshCw, Smartphone, Mail, MessageSquare, Check, Share2, Plus, AlertCircle } from 'lucide-react';
+import {
+  Globe, Palette, Tag, MapPin, Bell, Download, RefreshCw, Smartphone,
+  Mail, MessageSquare, Check, Share2, Plus, AlertCircle,
+  Hand, Scissors, Sparkles, Heart, Droplets, Eye, Zap, Dumbbell
+} from 'lucide-react';
 import { usePreferences } from '@/hooks/usePreferences';
 import { useNotificationPreferences } from '@/hooks/useNotificationPreferences';
 import { useOneSignal } from '@/hooks/useOneSignal';
@@ -13,6 +17,18 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
+
+const iconMap: Record<string, any> = {
+  Hand,
+  Scissors,
+  Sparkles,
+  Heart,
+  Droplets,
+  Palette,
+  Eye,
+  Zap,
+  Dumbbell,
+};
 
 const SettingsPage: React.FC = () => {
   const { preferences, updatePreferences } = usePreferences();
@@ -103,7 +119,7 @@ const SettingsPage: React.FC = () => {
     <div className="min-h-screen bg-background pb-20">
       <PageHeader
         title={preferences.language === 'ar' ? 'الإعدادات' : preferences.language === 'fr' ? 'Paramètres' : 'Settings'}
-        onBack={() => navigate(-1)}
+        showBack={true}
       />
 
       <div className="p-4 space-y-6">
@@ -123,11 +139,10 @@ const SettingsPage: React.FC = () => {
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
-                className={`w-full p-3 rounded-lg border transition-all text-left ${
-                  preferences.language === lang.code
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border bg-card hover:border-primary/50'
-                }`}
+                className={`w-full p-3 rounded-lg border transition-all text-left ${preferences.language === lang.code
+                  ? 'border-primary bg-primary/5'
+                  : 'border-border bg-card hover:border-primary/50'
+                  }`}
               >
                 <span className="font-medium text-foreground">{lang.name}</span>
               </button>
@@ -151,11 +166,10 @@ const SettingsPage: React.FC = () => {
               <button
                 key={theme.value}
                 onClick={() => handleThemeChange(theme.value)}
-                className={`p-3 rounded-lg border transition-all ${
-                  preferences.theme === theme.value
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border bg-card hover:border-primary/50'
-                }`}
+                className={`p-3 rounded-lg border transition-all ${preferences.theme === theme.value
+                  ? 'border-primary bg-primary/5'
+                  : 'border-border bg-card hover:border-primary/50'
+                  }`}
               >
                 <span className="text-sm font-medium text-foreground">{theme.label}</span>
               </button>
@@ -177,14 +191,20 @@ const SettingsPage: React.FC = () => {
                 <button
                   key={category.id}
                   onClick={() => handleCategoryToggle(category.id)}
-                  className={`p-3 rounded-lg border transition-all ${
-                    isSelected
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border bg-card hover:border-primary/50'
-                  }`}
+                  className={`p-3 rounded-lg border transition-all ${isSelected
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border bg-card hover:border-primary/50'
+                    }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span>{category.icon}</span>
+                    {(() => {
+                      const IconComponent = iconMap[category.icon];
+                      return IconComponent ? (
+                        <IconComponent className={`w-4 h-4 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
+                      ) : (
+                        <Tag className="w-4 h-4 text-muted-foreground" />
+                      );
+                    })()}
                     <span className="text-sm font-medium text-foreground">{category.label}</span>
                   </div>
                 </button>
@@ -203,11 +223,10 @@ const SettingsPage: React.FC = () => {
           <div className="space-y-2">
             <button
               onClick={handleLocationToggle}
-              className={`w-full p-3 rounded-lg border transition-all text-left ${
-                preferences.location.enabled
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border bg-card'
-              }`}
+              className={`w-full p-3 rounded-lg border transition-all text-left ${preferences.location.enabled
+                ? 'border-primary bg-primary/5'
+                : 'border-border bg-card'
+                }`}
             >
               <span className="font-medium text-foreground">
                 {preferences.location.enabled

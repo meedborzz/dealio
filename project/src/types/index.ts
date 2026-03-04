@@ -12,9 +12,11 @@ export interface User {
 export interface UserProfile {
   id: UUID;
   full_name?: string;
+  avatar_url?: string;
   phone?: string;
   date_of_birth?: string;
   role: 'client' | 'business_owner' | 'admin';
+  categories?: string[];
   completed_bookings_count: number;
   loyalty_points: number;
   created_at: string;
@@ -57,6 +59,9 @@ export interface Business {
   email?: string;
   website?: string;
   category: string;
+  image_url?: string;
+  latitude?: number;
+  longitude?: number;
   rating: number;
   review_count: number;
   coordinates?: {

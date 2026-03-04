@@ -185,7 +185,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
     const { data } = await safeSingle(
       supabase
         .from('user_profiles')
-        .select('full_name, phone, wallet_balance')
+        .select('full_name, phone')
         .eq('id', user.id)
         .maybeSingle()
     );

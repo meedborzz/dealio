@@ -3,16 +3,7 @@ import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { FEATURES } from '../config/features';
 
-interface UserProfile {
-    id: string;
-    full_name?: string;
-    phone?: string;
-    role: 'client' | 'business_owner' | 'admin';
-    loyalty_points: number;
-    wallet_balance: number;
-    total_spent: number;
-    completed_bookings_count: number;
-}
+import { UserProfile } from '../types';
 
 interface AuthContextType {
     user: User | null;

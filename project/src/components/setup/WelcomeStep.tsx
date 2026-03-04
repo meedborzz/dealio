@@ -2,6 +2,7 @@ import React from 'react';
 import { Sparkles } from 'lucide-react';
 import { t } from '@/lib/i18n';
 import type { Language } from '@/lib/i18n';
+import { SetupTip } from './SetupTip';
 
 interface WelcomeStepProps {
   language: Language;
@@ -23,12 +24,7 @@ export const WelcomeStep: React.FC<WelcomeStepProps> = ({ language }) => {
         </p>
       </div>
 
-      <div className="w-full p-4 bg-primary/5 border border-primary/20 rounded-xl">
-        <p className="text-sm text-foreground flex items-center justify-center gap-2">
-          <span className="text-primary">✨</span>
-          {t('setup.welcome.tip', language)}
-        </p>
-      </div>
+      <SetupTip text={t('setup.welcome.tip', language)} />
     </div>
   );
 };

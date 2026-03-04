@@ -48,10 +48,10 @@ function AppContent() {
   if (!preferences.setupCompleted) {
     const isRestrictedRoute = window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/business');
 
-    if (isRestrictedRoute && user) {
-      // Allow bypassing setup for admin/business routes ONLY if we have a user 
-      // This prevents the "Access Denied" flash during logout
-      console.log('Bypassing onboarding for authenticated user on restricted route');
+    if (user || isRestrictedRoute) {
+      // Allow bypassing setup for ANY authenticated user OR restricted routes
+      // This prevents logged-in clients from getting stuck in onboarding
+      console.log('Bypassing onboarding for user or restricted route');
     } else {
       return <OnboardingPage />;
     }
