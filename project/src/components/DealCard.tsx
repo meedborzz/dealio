@@ -91,46 +91,49 @@ const DealCard: React.FC<DealCardProps> = ({
   if (variant === 'compact') {
     return (
       <Card
-        className="cursor-pointer group overflow-hidden bg-gradient-to-br from-card to-card/50 border-border/40 hover:border-primary/20 shadow-sm hover:shadow-xl active:scale-[0.98] transition-all duration-300 rounded-2xl relative"
+        className="cursor-pointer group overflow-hidden bg-card/40 backdrop-blur-sm border-border/40 hover:border-primary/30 shadow-sm hover:shadow-premium-hover active:scale-[0.98] transition-all duration-500 rounded-3xl relative"
         onClick={handleCardClick}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/[0.03] to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-        <div className="flex p-2 sm:p-2.5 relative z-10 gap-3">
-          <div className="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-[12px] bg-muted shadow-sm">
+        <div className="flex p-3 relative z-10 gap-4 items-center">
+          {/* Enhanced Image Container */}
+          <div className="relative w-24 h-24 flex-shrink-0 overflow-hidden rounded-2xl bg-muted shadow-sm ring-1 ring-border/5">
             <img
-              src={deal.image_url || 'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?auto=compress&cs=tinysrgb&w=200'}
+              src={deal.image_url || 'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?auto=compress&cs=tinysrgb&w=300'}
               alt={deal.title}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
             />
-            <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-300" />
+            <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500" />
 
-            <div className="absolute top-1 left-1">
-              <div className="relative overflow-hidden rounded-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-red-500/80 to-red-600/80 backdrop-blur-md" />
-                <Badge className="relative bg-transparent hover:bg-transparent text-white border-white/20 font-extrabold px-1.5 py-0.5 text-[10px] shadow-sm">
-                  -{deal.discount_percentage}%
-                </Badge>
-              </div>
+            <div className="absolute top-1.5 left-1.5">
+              <Badge className="bg-red-500/90 backdrop-blur-md text-white border-white/20 font-black px-1.5 py-0.5 text-[10px] shadow-lg rounded-full">
+                -{deal.discount_percentage}%
+              </Badge>
             </div>
           </div>
 
-          <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-            <div className="space-y-1">
-              <h3 className="font-bold text-foreground text-[14px] leading-tight line-clamp-1 group-hover:text-primary transition-colors duration-200">
+          <div className="flex-1 min-w-0 flex flex-col py-1">
+            <div className="mb-2">
+              <h3 className="font-extrabold text-foreground text-[16px] leading-[1.2] tracking-tight line-clamp-1 group-hover:text-primary transition-colors duration-300">
                 {deal.title}
               </h3>
-              <p className="text-[11px] font-medium text-muted-foreground line-clamp-1">{deal.business?.name}</p>
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <div className="bg-primary/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                  <span className="text-[10px] font-extrabold text-primary uppercase tracking-wider">{deal.duration_minutes} min</span>
+                </div>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between mt-1">
-              <div className="flex items-baseline gap-1.5 flex-wrap">
-                <span className="text-base font-bold text-foreground leading-none tracking-tight">
-                  {deal.discounted_price} <span className="text-[10px] font-medium">DH</span>
+            <div className="flex items-end justify-between mt-auto">
+              <div className="flex items-baseline gap-2">
+                <span className="text-lg font-extrabold text-foreground leading-none tracking-tight">
+                  {deal.discounted_price} <span className="text-[11px] font-medium opacity-60">DH</span>
                 </span>
-                <span className="text-[11px] font-medium text-muted-foreground line-through leading-none decoration-muted-foreground/50">
+                <span className="text-[11px] font-bold text-muted-foreground line-through leading-none decoration-muted-foreground/30">
                   {deal.original_price} DH
                 </span>
               </div>
@@ -140,9 +143,9 @@ const DealCard: React.FC<DealCardProps> = ({
                   variant="ghost"
                   size="icon"
                   onClick={handleFavoriteClick}
-                  className="h-7 w-7 rounded-full bg-primary/5 hover:bg-primary/10 transition-colors -mr-1"
+                  className="h-9 w-9 rounded-2xl bg-ui-soft/50 hover:bg-primary/10 transition-all group/fav"
                 >
-                  <Heart className={`h-3.5 w-3.5 ${user && isFavorite(deal.id) ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+                  <Heart className={`h-4 w-4 transition-all duration-300 ${user && isFavorite(deal.id) ? 'fill-red-500 text-red-500 scale-110' : 'text-muted-foreground/60 group-hover/fav:text-primary'}`} />
                 </Button>
               )}
             </div>

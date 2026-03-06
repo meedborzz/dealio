@@ -22,7 +22,6 @@ const DealDetailPage = lazy(() => import('../pages/DealDetailPage'));
 const PublicBusinessProfilePage = lazy(() => import('../pages/BusinessProfilePage'));
 
 const MapViewPage = FEATURES.MAP_VIEW ? lazy(() => import('../pages/MapViewPage')) : null;
-const ClientMessagesPage = FEATURES.MESSAGING ? lazy(() => import('../pages/ClientMessagesPage')) : null;
 
 const BusinessIntroPage = lazy(() => import('./business/BusinessIntroPage'));
 const CreateOfferPage = lazy(() => import('./business/CreateOfferPage'));
@@ -32,7 +31,6 @@ const BusinessBookingsPage = lazy(() => import('./business/BookingsPage'));
 const BusinessHistoryPage = FEATURES.BUSINESS_ANALYTICS ? lazy(() => import('./business/BookingHistoryPage')) : null;
 const BusinessStatsPage = FEATURES.BUSINESS_ANALYTICS ? lazy(() => import('./business/BookingStatsPage')) : null;
 const BusinessReviewsPage = FEATURES.REVIEWS ? lazy(() => import('./business/ReviewsPage')) : null;
-const BusinessMessagesPage = FEATURES.MESSAGING ? lazy(() => import('./business/MessagesPage')) : null;
 const OwnerBusinessProfilePage = lazy(() => import('./business/ProfilePage'));
 
 const AdminDashboard = lazy(() => import('../pages/AdminDashboard'));
@@ -76,10 +74,6 @@ const AppRoutes: React.FC = () => {
 
         <Route path="/booking-resume" element={<Navigate to="/bookings" replace />} />
 
-        {FEATURES.MESSAGING && ClientMessagesPage && (
-          <Route path="/messages" element={<RequireAuth><ClientMessagesPage /></RequireAuth>} />
-        )}
-
         <Route path="/business/:businessId" element={<PublicBusinessProfilePage />} />
 
         <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -111,9 +105,6 @@ const AppRoutes: React.FC = () => {
             <Route path="reviews" element={<BusinessReviewsPage />} />
           )}
 
-          {FEATURES.MESSAGING && BusinessMessagesPage && (
-            <Route path="messages" element={<BusinessMessagesPage />} />
-          )}
 
           <Route path="profile" element={<OwnerBusinessProfilePage />} />
         </Route>

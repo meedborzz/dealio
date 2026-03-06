@@ -164,21 +164,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    if (selectedDate && timeRef.current) {
-      setTimeout(() => {
-        timeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
-  }, [selectedDate]);
-
-  useEffect(() => {
-    if (showForm && formRef.current) {
-      setTimeout(() => {
-        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
-  }, [showForm]);
+  // Removed aggressive auto-scrolling to improve user experience on mobile
 
   const fetchUserProfile = async () => {
     if (!user) return;
@@ -847,7 +833,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex flex-col">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex flex-col">
       <div className="flex-shrink-0 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           {deal.image_url && (

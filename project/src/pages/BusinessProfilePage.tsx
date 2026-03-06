@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, MapPin, Phone, Mail, Globe, Calendar, Users, TrendingUp, Award, Heart, MessageSquare, Share2, MessageCircle, Tag } from 'lucide-react';
+import { ArrowLeft, MapPin, Phone, Mail, Calendar, Users, TrendingUp, Award, Heart } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { FEATURES } from '../config/features';
 import { useFavorites } from '../hooks/useFavorites';
-import InAppMessaging from '../components/InAppMessaging';
+import { useToast } from '@/components/ui/toast';
 
 interface BusinessProfile {
   id: string;
@@ -48,9 +48,9 @@ const BusinessProfilePage: React.FC = () => {
   const [business, setBusiness] = useState<BusinessProfile | null>(null);
   const [deals, setDeals] = useState<BusinessDeal[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showChat, setShowChat] = useState(false);
   const [activeTab, setActiveTab] = useState('about');
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -99,13 +99,7 @@ const BusinessProfilePage: React.FC = () => {
     }
   };
 
-  const openChatWithBusiness = () => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-    setShowChat(true);
-  };
+
 
   if (loading) {
     return (
@@ -132,114 +126,144 @@ const BusinessProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#c8a2c9] to-[#b892b9] sticky top-0 z-10">
-        <div className="flex items-center justify-between px-4 pt-12 pb-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="flex-shrink-0 text-white hover:bg-white/20">
-            <ArrowLeft className="h-4 w-4" />
+      {/* Elegant Transparent Header Overlay */}
+      <div className="absolute top-0 left-0 right-0 z-50 pt-safe bg-transparent">
+        <div className="flex items-center justify-between px-4 h-14">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="flex-shrink-0 text-foreground hover:bg-foreground/10 rounded-full transition-all bg-background/20 backdrop-blur-md">
+            <ArrowLeft className="h-5 w-5" strokeWidth={1.5} />
           </Button>
-          <h1 className="text-lg font-semibold text-white text-center flex-1 px-4 truncate">Profil du salon</h1>
-          <div className="flex items-center space-x-1 flex-shrink-0">
-            <Button variant="ghost" size="icon" onClick={() => { }} className="h-8 w-8 text-white hover:bg-white/20">
-              <Share2 className="h-4 w-4" />
-            </Button>
+          <div className="flex-1" />
+          <div className="flex items-center space-x-2 flex-shrink-0">
             {FEATURES.FAVORITES && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-white hover:bg-white/20"
+                className="h-10 w-10 text-foreground hover:bg-foreground/10 rounded-full transition-all bg-background/20 backdrop-blur-md"
                 onClick={() => toggleFavorite(businessId!)}
               >
-                <Heart className={`h-4 w-4 ${user && isFavorite(businessId!) ? 'text-destructive fill-current' : 'text-muted-foreground'}`} />
+                <Heart className={`h-5 w-5 transition-colors ${user && isFavorite(businessId!) ? 'text-destructive fill-current' : 'text-foreground/30'}`} strokeWidth={1.5} />
               </Button>
             )}
           </div>
         </div>
       </div>
 
-      {/* Business Hero */}
-      <div className="relative">
-        <div className="h-48 sm:h-56 bg-gradient-to-br from-primary/20 to-primary/5"></div>
-        <div className="absolute inset-0 flex items-end p-4 sm:p-6 pb-8 sm:pb-12">
-          <div className="flex items-end space-x-3 sm:space-x-4 w-full">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-card rounded-2xl border-4 border-background shadow-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl font-bold text-primary">
-                {business.name.charAt(0).toUpperCase()}
-              </span>
-            </div>
-            <div className="flex-1 pb-2 min-w-0">
-              <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-2 truncate">
-                {business.name}
-              </h1>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="text-xs">{business.category}</Badge>
-                <Badge variant="outline" className="text-xs">{business.city}</Badge>
+      {/* Immersive Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="h-64 sm:h-80 bg-gradient-to-br from-primary/10 via-background to-primary/5 relative">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(184,146,185,0.15),transparent)]" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
+        </div>
+
+        <div className="absolute inset-0 flex items-center justify-center p-6 bg-gradient-to-t from-background via-transparent to-transparent">
+          <div className="flex flex-col items-center w-full animate-in fade-in zoom-in-95 duration-1000">
+            <div className="text-center min-w-0 max-w-lg">
+              <div className="flex flex-col gap-3 items-center">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-none font-bold px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.2em]">
+                    {business.category}
+                  </Badge>
+                  <span className="text-muted-foreground/30">•</span>
+                  <div className="flex items-center text-muted-foreground text-[11px] font-bold tracking-tight uppercase opacity-70">
+                    <MapPin className="h-3 w-3 mr-1.5" />
+                    {business.city}
+                  </div>
+                </div>
+                <h1 className="text-4xl sm:text-6xl font-extrabold tracking-[-0.03em] text-foreground leading-[1.1] selection:bg-primary/20 transition-all duration-700">
+                  {business.name}
+                </h1>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-
-      {/* Action Buttons */}
-      <div className="px-4 mt-2 sm:mt-4 mb-4 sm:mb-6">
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
-          <Button onClick={openChatWithBusiness} className="flex-1">
-            <MessageCircle className="h-4 w-4 mr-1 sm:mr-2" />
-            Contacter
-          </Button>
+      {/* Primary Actions Area */}
+      <div className="px-6 mb-10">
+        <div className="max-w-2xl mx-auto flex justify-center gap-4">
           {business.phone && (
-            <Button variant="outline" onClick={() => window.open(`tel:${business.phone}`)}>
-              <Phone className="h-4 w-4 mr-1 sm:mr-2" />
-              Appeler
+            <Button
+              variant="outline"
+              onClick={() => window.open(`tel:${business.phone}`)}
+              className="flex-1 max-w-[160px] h-14 rounded-2xl border-border/60 hover:bg-ui-soft transition-all active:scale-95 shadow-sm group px-4"
+            >
+              <Phone className="h-4 w-4 mr-2.5 text-primary group-hover:scale-110 transition-transform" strokeWidth={2} />
+              <span className="text-[13px] font-bold tracking-tight">Appeler</span>
             </Button>
           )}
           <Button
             variant="outline"
             onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.address + ', ' + business.city)}`, '_blank')}
+            className="flex-1 max-w-[160px] h-14 rounded-2xl border-border/60 hover:bg-ui-soft transition-all active:scale-95 shadow-sm group px-4"
           >
-            <MapPin className="h-4 w-4 mr-1 sm:mr-2" />
-            Direction
+            <MapPin className="h-4 w-4 mr-2.5 text-primary group-hover:scale-110 transition-transform" strokeWidth={2} />
+            <span className="text-[13px] font-bold tracking-tight">Itinéraire</span>
           </Button>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="px-4">
+      {/* Tabs Layout */}
+      <div className="px-6 max-w-4xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 h-10">
-            <TabsTrigger value="about" className="text-xs sm:text-sm px-2">À propos</TabsTrigger>
-            <TabsTrigger value="offers" className="text-xs sm:text-sm px-2">Offres ({deals.length})</TabsTrigger>
+          <TabsList className="flex w-full bg-ui-soft/40 p-1 rounded-[2rem] h-auto border border-ui-line/50 mb-8 overflow-hidden backdrop-blur-sm">
+            <TabsTrigger
+              value="about"
+              className="flex-1 text-[12px] font-bold py-3 rounded-[1.1rem] data-[state=active]:bg-background data-[state=active]:shadow-premium transition-all uppercase tracking-[0.15em] text-muted-foreground data-[state=active]:text-foreground"
+            >
+              À propos
+            </TabsTrigger>
+            <TabsTrigger
+              value="offers"
+              className="flex-1 text-[12px] font-bold py-3 rounded-[1.1rem] data-[state=active]:bg-background data-[state=active]:shadow-premium transition-all uppercase tracking-[0.15em] text-muted-foreground data-[state=active]:text-foreground"
+            >
+              Offres ({deals.length})
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="about" className="mt-4 sm:mt-6">
-            <Card>
-              <CardContent className="p-4 sm:p-6">
+          <TabsContent value="about" className="mt-0 outline-none">
+            <div className="space-y-16 pb-16 animate-in fade-in slide-in-from-bottom-3 duration-700">
+              <section>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="h-[1px] flex-1 bg-ui-line/50" />
+                  <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.3em] opacity-60">À propos</h3>
+                  <div className="h-[1px] flex-1 bg-ui-line/50" />
+                </div>
                 {business.description ? (
-                  <p className="text-muted-foreground leading-relaxed mb-4 sm:mb-6 text-sm sm:text-base">
+                  <p className="text-foreground/90 leading-relaxed text-base font-normal text-center max-w-2xl mx-auto">
                     {business.description}
                   </p>
                 ) : (
-                  <p className="text-muted-foreground italic mb-4 sm:mb-6 text-sm">
-                    Aucune description disponible
+                  <p className="text-muted-foreground italic text-sm text-center">
+                    Aucune présentation disponible pour le salon.
                   </p>
                 )}
+              </section>
 
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground flex-shrink-0 mt-1" />
+              <section>
+                <div className="flex items-center gap-3 mb-10">
+                  <div className="h-[1px] flex-1 bg-ui-line/50" />
+                  <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.3em] opacity-60">Accessibilité</h3>
+                  <div className="h-[1px] flex-1 bg-ui-line/50" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-10">
+                  <div className="flex items-start space-x-5">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center flex-shrink-0 group hover:bg-primary/10 transition-all border border-primary/10 shadow-sm">
+                      <MapPin className="h-5 w-5 text-primary" strokeWidth={1.5} />
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm sm:text-base">Adresse</p>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{business.address}, {business.city}</p>
+                      <p className="text-[14px] font-bold text-foreground mb-1">Localisation</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{business.address}, {business.city}</p>
                     </div>
                   </div>
 
                   {business.phone && (
-                    <div className="flex items-start space-x-3">
-                      <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground flex-shrink-0 mt-1" />
+                    <div className="flex items-start space-x-5">
+                      <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center flex-shrink-0 group hover:bg-primary/10 transition-all border border-primary/10 shadow-sm">
+                        <Phone className="h-5 w-5 text-primary" strokeWidth={1.5} />
+                      </div>
                       <div>
-                        <p className="font-medium text-foreground text-sm sm:text-base">Téléphone</p>
-                        <a href={`tel:${business.phone}`} className="text-primary hover:underline">
+                        <p className="text-[14px] font-bold text-foreground mb-1">Téléphone</p>
+                        <a href={`tel:${business.phone}`} className="text-sm text-primary hover:text-primary-dark font-medium transition-colors">
                           {business.phone}
                         </a>
                       </div>
@@ -247,62 +271,46 @@ const BusinessProfilePage: React.FC = () => {
                   )}
 
                   {business.email && (
-                    <div className="flex items-start space-x-3">
-                      <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground flex-shrink-0 mt-1" />
+                    <div className="flex items-start space-x-5">
+                      <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center flex-shrink-0 group hover:bg-primary/10 transition-all border border-primary/10 shadow-sm">
+                        <Mail className="h-5 w-5 text-primary" strokeWidth={1.5} />
+                      </div>
                       <div>
-                        <p className="font-medium text-foreground text-sm sm:text-base">Email</p>
-                        <a href={`mailto:${business.email}`} className="text-primary hover:underline text-sm break-all">
+                        <p className="text-[14px] font-bold text-foreground mb-1">Email</p>
+                        <a href={`mailto:${business.email}`} className="text-sm text-primary hover:text-primary-dark font-medium break-all transition-colors">
                           {business.email}
                         </a>
                       </div>
                     </div>
                   )}
 
-                  {business.website && (
-                    <div className="flex items-start space-x-3">
-                      <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground flex-shrink-0 mt-1" />
-                      <div>
-                        <p className="font-medium text-foreground text-sm sm:text-base">Site web</p>
-                        <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm break-all">
-                          {business.website}
-                        </a>
-                      </div>
+                  <div className="flex items-start space-x-5">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center flex-shrink-0 group hover:bg-primary/10 transition-all border border-primary/10 shadow-sm">
+                      <Calendar className="h-5 w-5 text-primary" strokeWidth={1.5} />
                     </div>
-                  )}
-
-                  <div className="flex items-start space-x-3">
-                    <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground flex-shrink-0 mt-1" />
                     <div>
-                      <p className="font-medium text-foreground text-sm sm:text-base">Membre depuis</p>
-                      <p className="text-muted-foreground text-sm">
+                      <p className="text-[14px] font-bold text-foreground mb-1">Partenaire depuis</p>
+                      <p className="text-sm text-muted-foreground capitalize">
                         {format(parseISO(business.created_at), 'MMMM yyyy', { locale: fr })}
                       </p>
                     </div>
                   </div>
-
-                  <div className="flex items-start space-x-3">
-                    <Tag className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="font-medium text-foreground text-sm sm:text-base">Catégorie</p>
-                      <p className="text-muted-foreground text-sm">{business.category}</p>
-                    </div>
-                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </section>
+            </div>
           </TabsContent>
 
-          <TabsContent value="offers" className="mt-4 sm:mt-6">
+          <TabsContent value="offers" className="mt-0 pb-16 outline-none animate-in fade-in slide-in-from-bottom-3 duration-700">
             {deals.length === 0 ? (
-              <Card>
-                <CardContent className="text-center py-8 sm:py-12">
-                  <Award className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" />
-                  <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">Aucune offre active</h3>
-                  <p className="text-muted-foreground text-sm sm:text-base">Ce salon n'a pas d'offres disponibles pour le moment</p>
-                </CardContent>
-              </Card>
+              <div className="text-center py-20 px-6 glass-card rounded-3xl border-dashed border-2 border-ui-line">
+                <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-primary/10">
+                  <Award className="h-10 w-10 text-primary/40" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2">Aucune offre active</h3>
+                <p className="text-muted-foreground text-[15px] max-w-[240px] mx-auto">Revenez prochainement pour découvrir les nouveaux soins du salon.</p>
+              </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {deals.map((deal) => (
                   <DealCard
                     key={deal.id}
@@ -320,17 +328,7 @@ const BusinessProfilePage: React.FC = () => {
       </div>
 
       {/* Bottom spacing for mobile navigation */}
-      <div className="h-20 sm:h-8"></div>
-
-      {/* Chat Modal */}
-      {showChat && (
-        <InAppMessaging
-          isOpen={showChat}
-          onClose={() => setShowChat(false)}
-          businessId={businessId}
-          businessName={business.name}
-        />
-      )}
+      <div className="h-24 sm:h-12"></div>
     </div>
   );
 };

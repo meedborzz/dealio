@@ -154,9 +154,9 @@ const DealDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-[100dvh] bg-background">
       {/* Hero Image Section with Overlay */}
-      <div className="relative h-[60vh] overflow-hidden">
+      <div className="relative h-[45vh] sm:h-[55vh] overflow-hidden">
         <img
           src={deal.image_url || 'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?auto=compress&cs=tinysrgb&w=800'}
           alt={deal.title}
@@ -250,23 +250,23 @@ const DealDetailPage: React.FC = () => {
       </div>
 
       {/* Content Section */}
-      <div className="px-4 pt-6 space-y-8">
+      <div className="px-4 pt-4 space-y-6">
         {/* Title & Business Info */}
         <div className="space-y-4">
-          <h1 className="text-3xl font-bold text-foreground leading-tight">{deal.title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground leading-[1.15] tracking-tight">{deal.title}</h1>
 
           <button
             onClick={() => navigate(`/business/${deal.business_id}`)}
             className="flex items-center gap-3 group min-w-0"
           >
-            <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#c8a2c9] to-[#b892b9] rounded-full flex items-center justify-center shadow-md">
-              <MapPin className="h-5 w-5 text-white" />
+            <div className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-[#c8a2c9]/80 to-[#b892b9]/80 border border-[#c8a2c9]/20 rounded-full flex items-center justify-center shadow-sm">
+              <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
             </div>
             <div className="text-left min-w-0">
-              <div className="font-semibold text-foreground group-hover:text-[#c8a2c9] dark:group-hover:text-white transition-colors truncate">
+              <div className="font-bold text-foreground group-hover:text-[#c8a2c9] dark:group-hover:text-white transition-colors truncate text-[15px]">
                 {deal.business?.name}
               </div>
-              <div className="text-sm text-muted-foreground">{deal.business?.city}</div>
+              <div className="text-xs text-muted-foreground font-medium">{deal.business?.city}</div>
             </div>
           </button>
         </div>
@@ -274,50 +274,53 @@ const DealDetailPage: React.FC = () => {
         {/* Description Section */}
         {deal.description && (
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent" />
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">À propos</h2>
+              <h2 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em]">À propos</h2>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent" />
             </div>
-            <p className="text-foreground/80 leading-relaxed text-base">{deal.description}</p>
+            <p className="text-foreground/80 leading-relaxed text-[15px] sm:text-base">{deal.description}</p>
           </div>
         )}
 
         {/* Business Details Card */}
-        <div className="bg-gradient-to-br from-muted/30 to-muted/10 rounded-3xl p-6 space-y-4 border border-border/50">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-semibold text-foreground">Informations du salon</h3>
+        <div className="bg-card shadow-sm rounded-3xl p-5 space-y-5 border border-border/40 relative overflow-hidden">
+          {/* Subtle decorative background */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent rounded-bl-full pointer-events-none" />
+
+          <div className="flex items-center justify-between mb-1 sm:mb-2 relative z-10">
+            <h3 className="text-[17px] sm:text-lg font-bold text-foreground">Informations du salon</h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate(`/business/${deal.business_id}`)}
-              className="text-[#c8a2c9] hover:text-[#b892b9] hover:bg-[#c8a2c9]/10 dark:text-[#d6aad7] dark:hover:text-white dark:hover:bg-[#d6aad7]/20"
+              className="text-[#c8a2c9] hover:text-[#b892b9] hover:bg-[#c8a2c9]/10 h-8 text-[11px] sm:text-xs font-bold uppercase tracking-wider"
             >
               Voir profil
             </Button>
           </div>
 
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-10 h-10 bg-background rounded-full flex items-center justify-center shadow-sm">
-                <MapPin className="h-4 w-4 text-[#c8a2c9]" />
+          <div className="space-y-4 relative z-10">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-full flex items-center justify-center bg-primary/5 border border-primary/10">
+                <MapPin className="h-3.5 w-3.5 text-[#c8a2c9]" />
               </div>
-              <div className="flex-1 pt-2">
-                <div className="text-sm text-muted-foreground mb-0.5">Adresse</div>
-                <div className="text-foreground font-medium">{deal.business?.address}</div>
+              <div className="flex-1">
+                <div className="text-[11px] text-muted-foreground mb-0.5 font-medium">Adresse</div>
+                <div className="text-[15px] text-foreground font-semibold leading-snug">{deal.business?.address}</div>
               </div>
             </div>
 
             {deal.business?.phone && (
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-10 h-10 bg-background rounded-full flex items-center justify-center shadow-sm">
-                  <Phone className="h-4 w-4 text-[#c8a2c9]" />
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-full flex items-center justify-center bg-primary/5 border border-primary/10">
+                  <Phone className="h-3.5 w-3.5 text-[#c8a2c9]" />
                 </div>
-                <div className="flex-1 pt-2">
-                  <div className="text-sm text-muted-foreground mb-0.5">Téléphone</div>
+                <div className="flex-1">
+                  <div className="text-[11px] text-muted-foreground mb-0.5 font-medium">Téléphone</div>
                   <a
                     href={`tel:${deal.business.phone}`}
-                    className="text-foreground font-medium hover:text-[#c8a2c9] dark:hover:text-[#d6aad7] transition-colors"
+                    className="text-[15px] text-foreground font-semibold hover:text-[#c8a2c9] dark:hover:text-[#d6aad7] transition-colors"
                   >
                     {deal.business.phone}
                   </a>
@@ -326,23 +329,19 @@ const DealDetailPage: React.FC = () => {
             )}
           </div>
         </div>
-
-        {/* Bottom spacing */}
-        <div className="h-40"></div>
       </div>
 
-      {/* Sticky Booking Button */}
-      <div className="fixed bottom-28 left-0 right-0 z-40 px-4">
+      {/* Static Booking Button Section */}
+      <div className="px-4 pt-6 pb-6 sm:pb-8">
         <Button
           onClick={() => setShowBookingModal(true)}
-          className="w-full bg-gradient-to-r from-[#c8a2c9] to-[#b892b9] hover:from-[#b892b9] hover:to-[#a882a9] text-white shadow-2xl py-7 rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-          size="lg"
+          className="w-full bg-gradient-to-r from-[#c8a2c9] to-[#b892b9] hover:from-[#b892b9] hover:to-[#a882a9] text-white shadow-xl shadow-[#c8a2c9]/20 py-6 rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 transform-gpu active:scale-[0.98]"
         >
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center justify-between w-full px-2">
             <span>Réserver maintenant</span>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">{deal.discounted_price}</span>
-              <span className="text-base font-normal">DH</span>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="text-xl sm:text-2xl">{deal.discounted_price}</span>
+              <span className="text-sm sm:text-base font-normal">DH</span>
             </div>
           </div>
         </Button>

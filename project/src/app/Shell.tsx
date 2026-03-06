@@ -56,7 +56,6 @@ const Shell: React.FC<ShellProps> = ({ children }) => {
 
   const protectedRoutes = ['/profile', '/business', '/admin'];
   if (FEATURES.FAVORITES) protectedRoutes.push('/favorites');
-  if (FEATURES.MESSAGING) protectedRoutes.push('/messages');
 
   const isProtectedRoute = protectedRoutes.some(route => location.pathname.startsWith(route));
 

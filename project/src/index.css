@@ -402,6 +402,14 @@
     @apply bg-gradient-to-r from-[#b892b9] to-[#9a7a9b] text-white shadow-md;
   }
 
+  .shadow-premium {
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03), 0 5px 15px -10px rgba(0, 0, 0, 0.02);
+  }
+
+  .shadow-premium-hover {
+    box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.08), 0 10px 20px -10px rgba(0, 0, 0, 0.04);
+  }
+
   /* Mobile UI Components */
   .mobile-header {
     @apply sticky top-0 z-40 glass-header;

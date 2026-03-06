@@ -296,8 +296,7 @@ const ClientBookingsPage: React.FC = () => {
   if (authLoading || (initialLoading && user)) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="sticky top-0 z-50 bg-background border-b border-border">
-          <div className="safe-area-top" />
+        <div className="sticky top-0 z-50 bg-background border-b border-border pt-safe">
           <div className="px-4 py-3">
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full flex-shrink-0">
@@ -322,8 +321,7 @@ const ClientBookingsPage: React.FC = () => {
   if (!authLoading && !user) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 pb-24">
-        <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/50 shadow-sm">
-          <div className="safe-area-top" />
+        <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/50 shadow-sm pt-safe">
           <div className="px-4 py-3">
             <div className="flex items-center gap-3">
               <Button
@@ -494,8 +492,7 @@ const ClientBookingsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/50 shadow-sm">
-        <div className="safe-area-top" />
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/50 shadow-sm pt-safe">
         <div className="px-4 py-3">
           <div className="flex items-center gap-3 mb-3">
             <Button

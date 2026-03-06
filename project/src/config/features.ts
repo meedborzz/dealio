@@ -4,7 +4,6 @@ export const FEATURES = {
   WALLET: false,
   PRICING: false,
   REFERRAL: true,
-  MESSAGING: false,
   FAVORITES: false,
   REVIEWS: false,
   MAP_VIEW: false,

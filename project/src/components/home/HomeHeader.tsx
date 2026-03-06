@@ -1,9 +1,7 @@
 import React from 'react';
 import { MapPin, Bell, User, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useNavigate } from 'react-router-dom';
 
 interface HomeHeaderProps {
   userName?: string;
@@ -55,11 +53,11 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
             onClick={onNotificationClick}
             className="relative rounded-full"
           >
-            <Bell className="h-5 w-5" />
+            <Bell className="h-5 w-5 text-foreground" />
             {unreadCount > 0 && (
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-destructive text-destructive-foreground border-2 border-background">
+              <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-extrabold text-white ring-2 ring-background shadow-sm">
                 {unreadCount > 9 ? '9+' : unreadCount}
-              </Badge>
+              </span>
             )}
           </Button>
 

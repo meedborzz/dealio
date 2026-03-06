@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Search, Menu, User, LogOut, Download, Bell, MessageSquare } from 'lucide-react';
+import { Search, Menu, User, LogOut, Download, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import ThemeToggle from './ThemeToggle';
 import { useNotifications } from '../hooks/useNotifications';
 import NotificationCenter from './NotificationCenter';
-import InAppMessaging from './InAppMessaging';
 import { FEATURES } from '../config/features';
 
 interface HeaderProps {
@@ -18,7 +17,6 @@ const Header: React.FC<HeaderProps> = ({ user, onNavigate, onLogout }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showMessaging, setShowMessaging] = useState(false);
   const { unreadCount } = useNotifications();
   const { theme } = useTheme();
   const navigate = useNavigate();
@@ -61,16 +59,7 @@ const Header: React.FC<HeaderProps> = ({ user, onNavigate, onLogout }) => {
           <div className="relative">
             {user ? (
               <div className="flex items-center space-x-4">
-                {/* Messaging Button */}
-                {FEATURES.MESSAGING && (
-                  <button
-                    onClick={() => setShowMessaging(true)}
-                    className="p-2 text-ink-600 hover:text-ink-900 transition-colors"
-                    title="Messages"
-                  >
-                    <MessageSquare className="h-6 w-6" strokeWidth={1.75} />
-                  </button>
-                )}
+                {/* Notification Bell */}
 
                 {/* Notification Bell */}
                 <button
@@ -153,14 +142,6 @@ const Header: React.FC<HeaderProps> = ({ user, onNavigate, onLogout }) => {
         isOpen={showNotifications}
         onClose={() => setShowNotifications(false)}
       />
-
-      {/* Messaging */}
-      {FEATURES.MESSAGING && (
-        <InAppMessaging
-          isOpen={showMessaging}
-          onClose={() => setShowMessaging(false)}
-        />
-      )}
     </header>
   );
 };

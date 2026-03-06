@@ -284,63 +284,54 @@ const BusinessProfilePage: React.FC = () => {
       <div className="md:hidden">
         <div className="p-3 space-y-4">
           {/* Business Header Card */}
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-start space-x-3">
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Building2 className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-2">
-                    <h1 className="text-lg font-bold text-foreground truncate">{biz.name}</h1>
-                    <Button
-                      onClick={() => setIsEditing(!isEditing)}
-                      variant="outline"
-                      size="sm"
-                      className="flex-shrink-0"
-                    >
-                      {isEditing ? <X className="h-4 w-4" /> : <Edit3 className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-2">{biz.city} • {biz.category}</p>
-                  <Badge variant={getStatusVariant(biz.status)} className="text-xs">
-                    {getStatusText(biz.status)}
-                  </Badge>
-                </div>
+          <div className="glass-card rounded-[2rem] p-6 shadow-premium relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="flex items-center space-x-5 relative z-10">
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center flex-shrink-0 border border-primary/20 shadow-sm">
+                <Building2 className="h-8 w-8 text-primary" />
               </div>
-            </CardContent>
-          </Card>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1.5">
+                  <h1 className="text-xl font-bold text-foreground truncate tracking-tight">{biz.name}</h1>
+                  <Button
+                    onClick={() => setIsEditing(!isEditing)}
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10 rounded-full hover:bg-primary/5 transition-all"
+                  >
+                    {isEditing ? <X className="h-5 w-5 text-muted-foreground" /> : <Edit3 className="h-5 w-5 text-primary" />}
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Badge variant="secondary" className="bg-primary/5 text-primary border-none text-[10px] font-bold uppercase tracking-wider px-2 py-0.5">
+                    {biz.category}
+                  </Badge>
+                  <span className="text-muted-foreground/30">•</span>
+                  <p className="text-xs font-semibold text-muted-foreground">{biz.city}</p>
+                </div>
+                <Badge variant={getStatusVariant(biz.status)} className="text-[10px] font-bold rounded-full px-3">
+                  {getStatusText(biz.status)}
+                </Badge>
+              </div>
+            </div>
+          </div>
 
           {/* Metrics Grid */}
-          <div className="grid grid-cols-2 gap-3">
-            <Card>
-              <CardContent className="p-3 text-center">
-                <Calendar className="h-6 w-6 text-primary mx-auto mb-2" />
-                <p className="text-lg font-bold">{metrics.totalBookings}</p>
-                <p className="text-xs text-muted-foreground">Réservations</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-3 text-center">
-                <DollarSign className="h-6 w-6 text-primary mx-auto mb-2" />
-                <p className="text-lg font-bold">{metrics.totalRevenue.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Revenus DH</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-3 text-center">
-                <Star className="h-6 w-6 text-primary mx-auto mb-2" />
-                <p className="text-lg font-bold">{metrics.averageRating.toFixed(1)}</p>
-                <p className="text-xs text-muted-foreground">Note moyenne</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-3 text-center">
-                <TrendingUp className="h-6 w-6 text-primary mx-auto mb-2" />
-                <p className="text-lg font-bold">{metrics.conversionRate.toFixed(0)}%</p>
-                <p className="text-xs text-muted-foreground">Taux succès</p>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { label: 'Réservations', value: metrics.totalBookings, icon: Calendar },
+              { label: 'Revenus DH', value: metrics.totalRevenue.toLocaleString(), icon: DollarSign },
+              { label: 'Note moyenne', value: metrics.averageRating.toFixed(1), icon: Star },
+              { label: 'Taux succès', value: `${metrics.conversionRate.toFixed(0)}%`, icon: TrendingUp },
+            ].map((stat, i) => (stat.label && (
+              <div key={i} className="glass-card rounded-[1.5rem] p-4 shadow-sm border border-ui-line/40 hover:shadow-premium transition-all group">
+                <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                  <stat.icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
+                </div>
+                <p className="text-2xl font-extrabold text-foreground tracking-tight leading-none mb-1">{stat.value}</p>
+                <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider opacity-70">{stat.label}</p>
+              </div>
+            )))}
           </div>
 
           {/* Business Info */}
@@ -529,54 +520,63 @@ const BusinessProfilePage: React.FC = () => {
       {/* Desktop: Original tabbed layout */}
       <div className="hidden md:block p-6 space-y-6">
         {/* Header */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                  <Building2 className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <div>
-                  <CardTitle className="text-2xl">{biz.name}</CardTitle>
-                  <p className="text-muted-foreground">{biz.city} • {biz.category}</p>
-                  <div className="flex items-center space-x-2 mt-2">
-                    <Badge variant={getStatusVariant(biz.status)}>
-                      {getStatusText(biz.status)}
-                    </Badge>
-                    <div className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                      <span className="text-sm font-medium">{(biz.rating ?? 0).toFixed(1)}</span>
-                    </div>
-                  </div>
-                </div>
+        {/* Header */}
+        <div className="glass-card rounded-[2.5rem] p-8 shadow-premium border-none relative overflow-hidden group mb-8">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+          <div className="flex items-center justify-between relative z-10">
+            <div className="flex items-center space-x-8">
+              <div className="w-24 h-24 bg-primary/10 rounded-[2rem] flex items-center justify-center border-4 border-background shadow-xl">
+                <Building2 className="h-10 w-10 text-primary" strokeWidth={1.5} />
               </div>
-
-              <div className="flex items-center space-x-2">
-                {!isEditing ? (
-                  <Button onClick={() => setIsEditing(true)} variant="outline">
-                    <Edit3 className="h-4 w-4 mr-2" />
-                    Modifier
-                  </Button>
-                ) : (
-                  <div className="flex space-x-2">
-                    <Button onClick={() => setIsEditing(false)} variant="outline">
-                      <X className="h-4 w-4 mr-2" />
-                      Annuler
-                    </Button>
-                    <Button onClick={handleSave} disabled={saving}>
-                      {saving ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-                      ) : (
-                        <Save className="h-4 w-4 mr-2" />
-                      )}
-                      Sauvegarder
-                    </Button>
+              <div>
+                <h1 className="text-4xl font-extrabold text-foreground tracking-tight mb-2">{biz.name}</h1>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center text-sm font-semibold text-muted-foreground">
+                    <MapPin className="h-4 w-4 mr-1.5 opacity-50" />
+                    {biz.city}
                   </div>
-                )}
+                  <span className="text-muted-foreground/30">•</span>
+                  <Badge variant="secondary" className="bg-primary/5 text-primary border-none text-[11px] font-bold uppercase tracking-widest px-3 py-1">
+                    {biz.category}
+                  </Badge>
+                </div>
+                <div className="flex items-center space-x-3 mt-4">
+                  <Badge variant={getStatusVariant(biz.status)} className="rounded-full px-4 py-1 text-[11px] font-bold shadow-sm">
+                    {getStatusText(biz.status)}
+                  </Badge>
+                  <div className="flex items-center space-x-1.5 bg-yellow-500/5 px-3 py-1 rounded-full border border-yellow-500/10">
+                    <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                    <span className="text-xs font-bold text-yellow-700">{(biz.rating ?? 0).toFixed(1)}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </CardHeader>
-        </Card>
+
+            <div className="flex items-center space-x-3">
+              {!isEditing ? (
+                <Button onClick={() => setIsEditing(true)} variant="outline" className="h-12 px-6 rounded-2xl border-border font-bold hover:bg-ui-soft transition-all active:scale-95 shadow-sm">
+                  <Edit3 className="h-4 w-4 mr-2" strokeWidth={2} />
+                  Modifier le profil
+                </Button>
+              ) : (
+                <div className="flex space-x-3">
+                  <Button onClick={() => setIsEditing(false)} variant="ghost" className="h-12 px-6 rounded-2xl font-bold hover:bg-destructive/5 text-destructive transition-all">
+                    <X className="h-4 w-4 mr-2" />
+                    Annuler
+                  </Button>
+                  <Button onClick={handleSave} disabled={saving} className="h-12 px-8 rounded-2xl font-bold bg-primary hover:bg-primary-dark shadow-premium hover:shadow-premium-hover transition-all">
+                    {saving ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
+                    ) : (
+                      <Save className="h-4 w-4 mr-2" />
+                    )}
+                    Sauvegarder
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

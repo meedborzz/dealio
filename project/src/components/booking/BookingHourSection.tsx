@@ -40,7 +40,7 @@ const BookingHourSection = React.forwardRef<HTMLDivElement, BookingHourSectionPr
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5 sm:gap-3">
             {availableSlots.map((slot) => {
               const isFull = !slot.is_available || slot.available_spots <= 0;
               const isSelected = selectedTimeSlotId === slot.id;
@@ -50,18 +50,18 @@ const BookingHourSection = React.forwardRef<HTMLDivElement, BookingHourSectionPr
                   key={slot.id}
                   onClick={() => { if (!isFull) onSelectSlot(slot); }}
                   disabled={isFull}
-                  className={`py-2.5 px-2 rounded-xl text-sm font-medium transition-all ${isSelected
-                    ? 'bg-primary text-primary-foreground shadow-md'
+                  className={`flex flex-col items-center justify-center h-12 sm:h-14 rounded-xl sm:rounded-2xl border-2 font-bold transition-all duration-300 ${isSelected
+                    ? 'bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.03]'
                     : isFull
-                      ? 'bg-muted/30 text-muted-foreground/50 cursor-not-allowed'
-                      : 'bg-card border border-border text-foreground hover:border-primary/40'
+                      ? 'bg-muted/10 border-border/30 opacity-40 cursor-not-allowed'
+                      : 'bg-card border-border/50 hover:border-primary/30 text-foreground'
                     }`}
                 >
-                  {slot.start_time?.slice(0, 5) || 'N/A'}
+                  <span className="text-[13px] sm:text-[15px]">{slot.start_time?.slice(0, 5) || 'N/A'}</span>
                   {isFull && (
-                    <div className="text-[10px] mt-0.5">
+                    <span className="text-[8px] sm:text-[9px] uppercase tracking-wider mt-0.5 opacity-80 truncate px-1 max-w-full">
                       {!slot.is_available ? 'Indisponible' : 'Complet'}
-                    </div>
+                    </span>
                   )}
                 </button>
               );

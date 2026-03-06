@@ -54,15 +54,18 @@ const NotificationToast: React.FC<NotificationToastProps> = ({
   if (!isVisible) return null;
 
   return (
-    <div className={`fixed top-4 right-4 z-50 transform transition-all duration-300 ${
-      isAnimating ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
-    }`}>
-      <div className={`flex items-center p-4 rounded-lg border shadow-lg max-w-sm ${getBackgroundColor()}`}>
-        {getIcon()}
-        <p className="ml-3 text-sm font-medium text-gray-900 flex-1">{message}</p>
+    <div className={`fixed top-24 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-sm transform transition-all duration-500 ease-out ${isAnimating ? 'translate-y-0 opacity-100 scale-100' : '-translate-y-4 opacity-0 scale-95'
+      }`}>
+      <div className={`flex items-center p-3.5 rounded-2xl border backdrop-blur-xl shadow-premium ${getBackgroundColor()}`}>
+        <div className="flex-shrink-0">
+          {getIcon()}
+        </div>
+        <p className="ml-3 text-[14px] font-semibold text-foreground flex-1 leading-tight tracking-tight">
+          {message}
+        </p>
         <button
           onClick={onClose}
-          className="bg-gradient-to-r from-[#c8a2c9] to-[#b892b9] hover:from-[#b892b9] hover:to-[#a67ba8] text-white px-6 py-3 rounded-lg transition-colors flex items-center space-x-2 mx-auto"
+          className="ml-2 p-1.5 rounded-xl hover:bg-foreground/5 transition-colors text-muted-foreground/60 hover:text-foreground"
         >
           <X className="h-4 w-4" />
         </button>
