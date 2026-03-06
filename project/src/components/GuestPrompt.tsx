@@ -2,12 +2,11 @@ import React from 'react';
 import { User, Heart, Star, Bell, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 interface GuestPromptProps {
   isOpen: boolean;
   onClose: () => void;
-  feature: 'favorites' | 'profile' | 'reviews' | 'notifications';
+  feature: 'favorites' | 'profile' | 'reviews' | 'notifications' | 'bookings';
   title: string;
   description: string;
 }
@@ -24,48 +23,68 @@ const GuestPrompt: React.FC<GuestPromptProps> = ({
   const getFeatureIcon = () => {
     switch (feature) {
       case 'favorites':
-        return <Heart className="h-8 w-8 text-primary-foreground" />;
+        return <Heart className="h-8 w-8 text-primary relative z-10" />;
       case 'profile':
-        return <User className="h-8 w-8 text-primary-foreground" />;
+        return <User className="h-8 w-8 text-primary relative z-10" />;
       case 'reviews':
-        return <Star className="h-8 w-8 text-primary-foreground" />;
+        return <Star className="h-8 w-8 text-primary relative z-10" />;
       case 'notifications':
-        return <Bell className="h-8 w-8 text-primary-foreground" />;
+        return <Bell className="h-8 w-8 text-primary relative z-10" />;
       default:
-        return <User className="h-8 w-8 text-primary-foreground" />;
+        return <User className="h-8 w-8 text-primary relative z-10" />;
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4">
-      <Card className="max-w-sm w-full shadow-2xl">
-        {/* Header */}
-        <CardHeader className="bg-primary p-6 text-center relative rounded-t-2xl">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 bg-white/20 dark:bg-black/20 rounded-full flex items-center justify-center hover:bg-white/30 dark:hover:bg-black/30 transition-colors"
-          >
-            <X className="h-4 w-4 text-primary-foreground" />
-          </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] transition-opacity"
+        onClick={onClose}
+      />
 
-          <div className="w-16 h-16 bg-white/20 dark:bg-black/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            {getFeatureIcon()}
+      {/* Modal Container */}
+      <div className="relative w-full max-w-sm overflow-hidden rounded-[32px] bg-background border border-border shadow-2xl animate-in zoom-in-95 duration-200">
+
+        {/* Soft Background Mesh */}
+        <div className="absolute -top-32 -right-32 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+
+        <div className="relative z-10">
+          {/* Header Section */}
+          <div className="pt-10 pb-6 px-6 flex flex-col items-center text-center">
+
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-background/50 hover:bg-background/80 backdrop-blur-md flex items-center justify-center transition-colors border border-border"
+            >
+              <X className="h-4 w-4 text-foreground/70 hover:text-foreground" />
+            </button>
+
+            {/* Icon Container with Glassmorphism */}
+            <div className="w-20 h-20 rounded-[20px] bg-white/50 dark:bg-black/50 backdrop-blur-md flex items-center justify-center border border-white/50 dark:border-white/10 shadow-lg relative overflow-hidden mb-6 group">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-50 transition-opacity group-hover:opacity-70" />
+              {getFeatureIcon()}
+            </div>
+
+            <h2 className="text-2xl font-extrabold text-foreground mb-2 tracking-tight">
+              {title}
+            </h2>
+            <p className="text-muted-foreground font-medium text-sm leading-relaxed px-4">
+              {description}
+            </p>
           </div>
-          <h2 className="text-xl font-bold text-primary-foreground mb-2">{title}</h2>
-          <p className="text-primary-foreground/90 text-sm">{description}</p>
-        </CardHeader>
 
-        <CardContent className="p-6">
-          {/* Action Buttons */}
-          <div className="space-y-3">
+          {/* Actions Section */}
+          <div className="px-6 pb-8 space-y-3">
             <Button
               onClick={() => {
                 onClose();
                 navigate('/login');
               }}
-              className="w-full py-3 rounded-xl font-bold transition-colors"
+              className="w-full h-12 rounded-2xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 transition-all active:scale-95 text-base"
             >
               Se connecter
             </Button>
@@ -76,26 +95,25 @@ const GuestPrompt: React.FC<GuestPromptProps> = ({
                 navigate('/register');
               }}
               variant="outline"
-              className="w-full"
+              className="w-full h-12 rounded-2xl font-bold border-2 hover:bg-primary/5 transition-all text-base"
             >
               Créer un compte
             </Button>
 
-            <Button
+            <button
               onClick={() => {
                 onClose();
                 if (feature === 'bookings') {
                   navigate('/');
                 }
               }}
-              variant="ghost"
-              className="w-full text-muted-foreground py-2 text-sm"
+              className="w-full py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mt-2"
             >
               {feature === 'bookings' ? 'Explorer les offres' : 'Continuer sans compte'}
-            </Button>
+            </button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, User, Building2, Check, Upload, CreditCard, Star, Eye, EyeOff } from 'lucide-react';
-import { Scissors, Bath, Hand, Waves, Sparkles, Zap, Palette, Dumbbell, Paintbrush, Droplets } from 'lucide-react';
+import { ArrowLeft, User, Building2, Check, Eye, EyeOff } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { usePreferences } from '../hooks/usePreferences';
+import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { categories as importedCategories, cities } from '../data/mockData';
+import Logo from '../components/Logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,7 +20,7 @@ import { getGuestSessionId, clearGuestSession } from '../lib/guestSession';
 interface RegistrationPageProps {
 }
 
-type UserType = 'client' | 'business'; 
+type UserType = 'client' | 'business';
 type BusinessStep = 'info' | 'verification';
 
 interface BusinessFormData {
@@ -91,7 +92,7 @@ const RegistrationPage: React.FC<RegistrationPageProps> = () => {
   });
 
   const navigate = useNavigate();
-  
+
   const handleReferralReward = async (newUserId: string, referrerId: string) => {
     if (!FEATURES.WALLET) return;
 
@@ -113,7 +114,7 @@ const RegistrationPage: React.FC<RegistrationPageProps> = () => {
       console.error('Error processing referral reward:', error);
     }
   };
-  
+
   const handleClientRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
     if (clientData.password !== clientData.confirmPassword) {
@@ -138,7 +139,7 @@ const RegistrationPage: React.FC<RegistrationPageProps> = () => {
             .select('id')
             .eq('referral_code', referralCode.trim().toUpperCase())
             .single();
-          
+
           if (referrer) {
             referredBy = referrer.id;
           }
@@ -235,14 +236,14 @@ const RegistrationPage: React.FC<RegistrationPageProps> = () => {
       // First try to sign up
       let authData, authError;
       const signUpResult = await signUp(
-        businessData.email, 
-        businessPassword, 
+        businessData.email,
+        businessPassword,
         businessData.name
       );
-      
+
       authData = signUpResult.data;
       authError = signUpResult.error;
-      
+
       // Handle specific errors
       if (authError) {
         if (authError.message.includes('over_email_send_rate_limit')) {
@@ -258,14 +259,14 @@ const RegistrationPage: React.FC<RegistrationPageProps> = () => {
 
       // Wait for session to be established
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Get current session to ensure we have a user
       const { data: { session } } = await supabase.auth.getSession();
       const currentUser = session?.user || authData?.user;
 
       if (currentUser) {
         console.log('Creating business for user:', currentUser.id);
-        
+
         // Insert into user_profiles table with 'business_owner' role
         const { error: profileError } = await supabase
           .from('user_profiles')
@@ -359,70 +360,67 @@ const RegistrationPage: React.FC<RegistrationPageProps> = () => {
   };
 
   const renderUserTypeSelection = () => (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-foreground mb-2">Rejoignez Dealio</h2>
-        <p className="text-muted-foreground">Choisissez votre type de compte</p>
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="space-y-6"
+    >
+      <div className="text-center space-y-2 mb-8">
+        <h2 className="text-2xl font-bold text-foreground">Bienvenue sur Dealio</h2>
+        <p className="text-muted-foreground font-medium">Choisissez votre univers pour continuer</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Client Card */}
-        <button
+      <div className="flex flex-col space-y-4">
+        {/* Client Option - Minimalist & Mobile Optimized */}
+        <motion.button
+          whileTap={{ scale: 0.98 }}
           onClick={() => setUserType('client')}
-          className="p-8 border-2 border-border rounded-2xl hover:border-primary hover:bg-accent transition-all duration-150 ease text-left group"
+          className="w-full flex items-center p-6 rounded-2xl border-2 border-border/40 bg-card hover:border-primary/50 hover:bg-accent/50 transition-all text-left group"
         >
-          <div className="flex items-center justify-center w-16 h-16 bg-accent rounded-full mb-4 group-hover:bg-muted">
-            <User className="h-8 w-8 text-foreground" strokeWidth={1.75} />
+          <div className="w-14 h-14 rounded-2xl bg-foreground flex items-center justify-center mr-5 shrink-0 group-hover:scale-105 transition-transform">
+            <User className="h-7 w-7 text-background" strokeWidth={2} />
           </div>
-          <h3 className="text-xl font-semibold text-foreground mb-2">Client</h3>
-          <p className="text-muted-foreground mb-4">
-            Découvrez et réservez les meilleures offres beauté près de chez vous
-          </p>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-center">
-              <Check className="h-4 w-4 text-primary mr-2" strokeWidth={1.75} />
-              Réservation en ligne
-            </li>
-            <li className="flex items-center">
-              <Check className="h-4 w-4 text-primary mr-2" strokeWidth={1.75} />
-              Offres exclusives
-            </li>
-            <li className="flex items-center">
-              <Check className="h-4 w-4 text-primary mr-2" strokeWidth={1.75} />
-              Avis et recommandations
-            </li>
-          </ul>
-        </button>
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-foreground mb-0.5">Je suis un Client</h3>
+            <p className="text-sm text-muted-foreground font-medium">
+              Trouvez et réservez les meilleures offres.
+            </p>
+          </div>
+          <motion.div
+            initial={{ x: 0 }}
+            whileHover={{ x: 3 }}
+            className="text-muted-foreground/30"
+          >
+            <Check className="h-6 w-6" strokeWidth={3} />
+          </motion.div>
+        </motion.button>
 
-        {/* Business Card */}
-        <button
+        {/* Business Option - Minimalist & Mobile Optimized */}
+        <motion.button
+          whileTap={{ scale: 0.98 }}
           onClick={() => setUserType('business')}
-          className="p-8 border-2 border-border rounded-2xl hover:border-primary hover:bg-accent transition-all duration-150 ease text-left group"
+          className="w-full flex items-center p-6 rounded-2xl border-2 border-border/40 bg-card hover:border-primary/50 hover:bg-accent/50 transition-all text-left group"
         >
-          <div className="flex items-center justify-center w-16 h-16 bg-accent rounded-full mb-4 group-hover:bg-muted">
-            <Building2 className="h-8 w-8 text-foreground" strokeWidth={1.75} />
+          <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center mr-5 shrink-0 group-hover:scale-105 transition-transform">
+            <Building2 className="h-7 w-7 text-white" strokeWidth={2} />
           </div>
-          <h3 className="text-xl font-semibold text-foreground mb-2">Professionnel</h3>
-          <p className="text-muted-foreground mb-4">
-            Développez votre activité et gérez vos réservations facilement
-          </p>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-center">
-              <Check className="h-4 w-4 text-primary mr-2" strokeWidth={1.75} />
-              Gestion des réservations
-            </li>
-            <li className="flex items-center">
-              <Check className="h-4 w-4 text-primary mr-2" strokeWidth={1.75} />
-              Tableau de bord analytics
-            </li>
-            <li className="flex items-center">
-              <Check className="h-4 w-4 text-primary mr-2" strokeWidth={1.75} />
-              Promotion de vos services
-            </li>
-          </ul>
-        </button>
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-foreground mb-0.5">Je suis un Pro</h3>
+            <p className="text-sm text-muted-foreground font-medium">
+              Gérez votre activité et vos réservations.
+            </p>
+          </div>
+          <motion.div
+            initial={{ x: 0 }}
+            whileHover={{ x: 3 }}
+            className="text-muted-foreground/30"
+          >
+            <Check className="h-6 w-6" strokeWidth={3} />
+          </motion.div>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 
   const renderClientRegistration = () => (
@@ -800,24 +798,21 @@ const RegistrationPage: React.FC<RegistrationPageProps> = () => {
 
             return (
               <div key={step.id} className="flex items-center">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                  isActive
-                    ? 'border-primary bg-primary text-primary-foreground'
-                    : isCompleted
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${isActive
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : isCompleted
                     ? 'border-green-500 bg-green-500 text-white'
                     : 'border-border bg-background text-muted-foreground'
-                }`}>
+                  }`}>
                   <Icon className="h-5 w-5" strokeWidth={1.75} />
                 </div>
-                <span className={`ml-2 text-sm font-medium ${
-                  isActive ? 'text-primary' : isCompleted ? 'text-green-600' : 'text-muted-foreground'
-                }`}>
+                <span className={`ml-2 text-sm font-medium ${isActive ? 'text-primary' : isCompleted ? 'text-green-600' : 'text-muted-foreground'
+                  }`}>
                   {step.name}
                 </span>
                 {index < steps.length - 1 && (
-                  <div className={`w-8 h-0.5 mx-4 ${
-                    isCompleted ? 'bg-green-500' : 'bg-border'
-                  }`} />
+                  <div className={`w-8 h-0.5 mx-4 ${isCompleted ? 'bg-green-500' : 'bg-border'
+                    }`} />
                 )}
               </div>
             );
@@ -832,68 +827,87 @@ const RegistrationPage: React.FC<RegistrationPageProps> = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <button
-              onClick={() => {
-                if (userType === 'business' && currentStep === 'verification') {
-                  setCurrentStep('info');
-                } else if (userType) {
-                  setUserType(null);
-                } else {
-                  navigate('/');
-                }
-              }}
-              className="flex items-center text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" strokeWidth={1.75} />
-              Retour
-            </button>
+    <div className="min-h-dvh bg-background flex flex-col items-center">
+      {/* Premium Purple Header */}
+      <div className="w-full bg-primary pt-safe pb-8 px-6 flex flex-col items-center relative overflow-hidden">
+        {/* Subtle decorative circles */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16 blur-2xl" />
 
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-foreground">Dealio</h1>
+        <div className="w-full max-w-[440px] flex items-center justify-between relative z-10">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              if (userType === 'business' && currentStep === 'verification') {
+                setCurrentStep('info');
+              } else if (userType) {
+                setUserType(null);
+              } else {
+                navigate('/');
+              }
+            }}
+            className="p-2 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10 rounded-full transition-all"
+          >
+            <ArrowLeft className="h-6 w-6" strokeWidth={2} />
+          </motion.button>
+
+          <Logo className="h-10 w-auto" />
+
+          <div className="w-10"></div>
+        </div>
+      </div>
+
+      <div className="w-full max-w-[440px] px-6 py-12 space-y-8 flex-1 flex flex-col justify-center">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={userType ? (userType === 'business' ? currentStep : 'client-reg') : 'selection'}
+            initial={{ opacity: 0, scale: 0.98, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.98, y: -10 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full"
+          >
+            {/* Messages */}
+            {error && (
+              <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-2xl">
+                <p className="text-destructive text-sm font-semibold text-center">{error}</p>
+              </div>
+            )}
+            {successMessage && (
+              <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-2xl">
+                <p className="text-green-600 dark:text-green-400 text-sm font-semibold text-center">{successMessage}</p>
+              </div>
+            )}
+
+            {/* Content Body */}
+            <div className={!userType ? "px-1" : "bg-card rounded-[2.5rem] shadow-xl border border-border/40 p-8 sm:p-10"}>
+              {!userType && renderUserTypeSelection()}
+              {userType === 'client' && renderClientRegistration()}
+              {userType === 'business' && renderBusinessSteps()}
             </div>
+          </motion.div>
+        </AnimatePresence>
 
-            <div className="w-20"></div>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="mb-6 p-4 bg-destructive/10 border border-destructive rounded-lg">
-              <p className="text-destructive text-sm">{error}</p>
-            </div>
-          )}
-
-          {/* Success Message */}
-          {successMessage && (
-            <div className="mb-6 p-4 bg-green-500/10 border border-green-500 rounded-lg">
-              <p className="text-green-600 dark:text-green-400 text-sm">{successMessage}</p>
-            </div>
-          )}
-
-          {/* Main Content */}
-          <div className="bg-card rounded-2xl shadow-xl p-8 border border-border">
-            {!userType && renderUserTypeSelection()}
-            {userType === 'client' && renderClientRegistration()}
-            {userType === 'business' && renderBusinessSteps()}
-          </div>
-
-          {/* Footer */}
-          <div className="text-center mt-8">
-            <p className="text-muted-foreground text-sm">
+        {/* Footer */}
+        {!userType && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-center pt-4"
+          >
+            <p className="text-muted-foreground font-medium text-sm">
               Vous avez déjà un compte ?{' '}
               <button
                 onClick={() => navigate('/login')}
-                className="text-primary hover:text-primary/80 font-medium"
+                className="text-foreground hover:text-primary font-bold underline underline-offset-8 decoration-primary/30 transition-all hover:decoration-primary"
               >
                 Se connecter
               </button>
             </p>
-          </div>
-        </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

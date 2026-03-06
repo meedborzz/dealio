@@ -82,7 +82,7 @@ const DealDetailPage: React.FC = () => {
         return;
       }
 
-      setDeal({ ...dealData, business: dealData.business });
+      setDeal({ ...(dealData as any), business: (dealData as any).business });
     } catch (error) {
       console.error('Error fetching deal details:', error);
       setDeal(null);
@@ -198,13 +198,26 @@ const DealDetailPage: React.FC = () => {
         </div>
 
         {/* Discount Badge & Remaining Places */}
-        <div className="absolute top-24 right-4 z-10 space-y-2">
-          <div className="bg-gradient-to-br from-red-500 to-red-600 text-white px-2.5 py-1 rounded-full shadow-lg backdrop-blur-sm">
-            <span className="text-sm font-bold">-{deal.discount_percentage}%</span>
+        <div className="absolute top-24 right-4 z-10 flex flex-col items-end gap-2">
+          {/* Discount Badge */}
+          <div className="relative group overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-red-600/20 blur-md group-hover:blur-lg transition-all" />
+            <div className="relative flex items-center gap-1.5 bg-gradient-to-br from-red-500/90 to-red-600/90 dark:from-red-500/80 dark:to-red-600/80 backdrop-blur-md border border-white/20 dark:border-white/10 text-white px-3 py-1.5 rounded-full shadow-lg">
+              <span className="text-sm font-extrabold tracking-tight">-{deal.discount_percentage}%</span>
+            </div>
           </div>
+
+          {/* Quota Badge */}
           {deal.quota_enabled && (
-            <div className="bg-gradient-to-br from-[#c8a2c9] to-[#b892b9] text-white px-4 py-2 rounded-full shadow-lg backdrop-blur-sm text-center">
-              <span className="text-sm font-semibold">Plus que {deal.booking_quota_remaining} places</span>
+            <div className="relative group overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/10 blur-md group-hover:blur-lg transition-all" />
+              <div className="relative flex items-center gap-1.5 bg-gradient-to-br from-primary/90 to-primary/80 dark:from-primary/50 dark:to-primary/40 backdrop-blur-md border border-white/30 dark:border-white/10 text-primary-foreground dark:text-white px-3.5 py-1.5 rounded-full shadow-lg">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                </span>
+                <span className="text-xs sm:text-sm font-semibold tracking-wide">Plus que {deal.booking_quota_remaining} places</span>
+              </div>
             </div>
           )}
         </div>

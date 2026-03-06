@@ -43,11 +43,7 @@ const Shell: React.FC<ShellProps> = ({ children }) => {
     );
   }
 
-  // Skip onboarding in development
-  const onboardingCompleted = localStorage.getItem('dealio-onboarding-completed') || 'true';
-  // if (!onboardingCompleted && location.pathname !== '/onboarding') {
-  //   return <Navigate to="/onboarding" replace />;
-  // }
+  // Onboarding check moved to AppContent in App.tsx
 
   if (user && profile && location.pathname === '/') {
     if (profile.role === 'business_owner') {
@@ -70,7 +66,7 @@ const Shell: React.FC<ShellProps> = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background pb-[calc(64px+var(--safe-area-inset-bottom))] relative flex flex-col">
       {children}
       <BottomNav />
       <InstallBottomSheet />

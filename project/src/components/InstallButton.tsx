@@ -1,39 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Download, Share, Smartphone } from 'lucide-react';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-}
+import { usePWA } from '../contexts/PWAContext';
 
 export function InstallButton() {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isIOS, setIsIOS] = useState(false);
-  const [isStandalone, setIsStandalone] = useState(false);
+  const { isInstallable, isInstalled, isIOS, promptInstall } = usePWA();
   const [showDialog, setShowDialog] = useState(false);
-
-  useEffect(() => {
-    const standalone = window.matchMedia('(display-mode: standalone)').matches ||
-                      (window.navigator as any).standalone === true;
-    setIsStandalone(standalone);
-
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-    const isInSafari = /Safari/.test(navigator.userAgent) && !/Chrome|CriOS|FxiOS|EdgiOS/.test(navigator.userAgent);
-    setIsIOS(isIOSDevice && isInSafari);
-
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
-  }, []);
 
   const handleInstallClick = async () => {
     if (isIOS) {
@@ -41,25 +14,15 @@ export function InstallButton() {
       return;
     }
 
-    if (!deferredPrompt) {
-      setShowDialog(true);
-      return;
-    }
-
     try {
-      await deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-
-      if (outcome === 'accepted') {
-        setDeferredPrompt(null);
-      }
+      await promptInstall();
     } catch (error) {
       console.error('Error installing PWA:', error);
       setShowDialog(true);
     }
   };
 
-  if (isStandalone) {
+  if (isInstalled || !isInstallable) {
     return null;
   }
 
@@ -81,10 +44,10 @@ export function InstallButton() {
               <Smartphone className="h-5 w-5 text-primary" />
               Installer l'application
             </DialogTitle>
-            <DialogDescription className="text-left space-y-4 pt-4">
+            <DialogDescription className="text-left space-y-4 pt-4 text-foreground">
               {isIOS ? (
                 <>
-                  <p className="text-sm text-foreground">
+                  <p className="text-sm">
                     Pour installer sur iOS :
                   </p>
                   <div className="bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 p-4 rounded-xl space-y-2.5 text-sm">
@@ -116,7 +79,7 @@ export function InstallButton() {
                 </>
               ) : (
                 <>
-                  <p className="text-sm text-foreground">
+                  <p className="text-sm">
                     Pour installer l'application :
                   </p>
                   <div className="bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 p-4 rounded-xl space-y-2.5 text-sm">
@@ -154,7 +117,7 @@ export function InstallButton() {
           </DialogHeader>
           <Button
             onClick={() => setShowDialog(false)}
-            className="w-full bg-gradient-to-r from-[#c8a2c9] to-[#b892b9] hover:from-[#b892b9] hover:to-[#a882a9] rounded-xl"
+            className="w-full bg-gradient-to-r from-[#c8a2c9] to-[#b892b9] hover:from-[#b892b9] hover:to-[#a882a9] rounded-xl font-semibold"
           >
             Compris
           </Button>

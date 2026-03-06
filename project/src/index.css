@@ -60,7 +60,9 @@
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    overscroll-behavior-y: none;
+    height: 100%;
+    /* Allow native bounce but with containment */
+    overscroll-behavior-y: auto;
   }
 
   body {
@@ -70,20 +72,24 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.3s ease, color 0.3s ease;
-    overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
-    position: fixed;
+
+    /* Fix for mobile viewport height and scrolling */
+    min-height: 100%;
+    min-height: -webkit-fill-available;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    /* Remove the fixed position that breaks scrolling */
+    position: relative;
   }
 
   #root {
     width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   /* Monochrome scrollbars */
@@ -203,6 +209,12 @@
   }
 
   /* Native App Header with Safe Area */
+  .safe-area-top {
+    height: var(--safe-area-inset-top);
+    width: 100%;
+    background: transparent;
+  }
+
   .native-header {
     position: fixed;
     top: 0;
@@ -346,13 +358,13 @@
 
   /* Full viewport height accounting for safe areas */
   .min-h-screen-safe {
-    min-height: 100vh;
-    min-height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+    min-height: 100dvh;
+    min-height: calc(100dvh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
   }
 
   .h-screen-safe {
-    height: 100vh;
-    height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+    height: 100dvh;
+    height: calc(100dvh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
   }
 
   /* Top positioning with safe area */

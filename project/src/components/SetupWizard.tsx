@@ -230,15 +230,13 @@ export const SetupWizard: React.FC = () => {
       <div className="space-y-3">
         <button
           onClick={() => handleUserTypeSelect('personal')}
-          className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-4 ${
-            selectedUserType === 'personal'
+          className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-4 ${selectedUserType === 'personal'
               ? 'border-primary bg-primary/5'
               : 'border-border bg-card hover:border-primary/50'
-          }`}
+            }`}
         >
-          <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-            selectedUserType === 'personal' ? 'bg-primary/10' : 'bg-muted'
-          }`}>
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center ${selectedUserType === 'personal' ? 'bg-primary/10' : 'bg-muted'
+            }`}>
             <User className={`w-6 h-6 ${selectedUserType === 'personal' ? 'text-primary' : 'text-muted-foreground'}`} />
           </div>
           <div className="text-left flex-1">
@@ -253,15 +251,13 @@ export const SetupWizard: React.FC = () => {
 
         <button
           onClick={() => handleUserTypeSelect('business')}
-          className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-4 ${
-            selectedUserType === 'business'
+          className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-4 ${selectedUserType === 'business'
               ? 'border-primary bg-primary/5'
               : 'border-border bg-card hover:border-primary/50'
-          }`}
+            }`}
         >
-          <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-            selectedUserType === 'business' ? 'bg-primary/10' : 'bg-muted'
-          }`}>
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center ${selectedUserType === 'business' ? 'bg-primary/10' : 'bg-muted'
+            }`}>
             <Building2 className={`w-6 h-6 ${selectedUserType === 'business' ? 'text-primary' : 'text-muted-foreground'}`} />
           </div>
           <div className="text-left flex-1">
@@ -283,11 +279,10 @@ export const SetupWizard: React.FC = () => {
           <button
             key={l.code}
             onClick={() => updatePreferences({ language: l.code })}
-            className={`w-full p-3 rounded-xl border-2 transition-all flex items-center gap-3 ${
-              preferences.language === l.code
+            className={`w-full p-3 rounded-xl border-2 transition-all flex items-center gap-3 ${preferences.language === l.code
                 ? 'border-primary bg-primary/5'
                 : 'border-border bg-card hover:border-primary/50'
-            }`}
+              }`}
           >
             <span className="text-xl">{l.flag}</span>
             <span className={`font-medium ${preferences.language === l.code ? 'text-primary' : 'text-foreground'}`}>
@@ -308,11 +303,10 @@ export const SetupWizard: React.FC = () => {
               <button
                 key={themeOption.value}
                 onClick={() => updatePreferences({ theme: themeOption.value })}
-                className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${
-                  preferences.theme === themeOption.value
+                className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${preferences.theme === themeOption.value
                     ? 'border-primary bg-primary/5'
                     : 'border-border bg-card hover:border-primary/50'
-                }`}
+                  }`}
               >
                 <Icon className={`w-5 h-5 ${preferences.theme === themeOption.value ? 'text-primary' : 'text-muted-foreground'}`} />
                 <span className={`text-xs font-medium ${preferences.theme === themeOption.value ? 'text-primary' : 'text-foreground'}`}>
@@ -353,11 +347,10 @@ export const SetupWizard: React.FC = () => {
                   : [...preferences.categories, category.id];
                 updatePreferences({ categories });
               }}
-              className={`p-3 rounded-xl border-2 transition-all ${
-                isSelected
+              className={`p-3 rounded-xl border-2 transition-all ${isSelected
                   ? 'border-primary bg-primary/5'
                   : 'border-border bg-card hover:border-primary/30'
-              }`}
+                }`}
             >
               <div className="flex flex-col items-center gap-1">
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isSelected ? 'bg-primary/10' : 'bg-muted'}`}>
@@ -400,7 +393,7 @@ export const SetupWizard: React.FC = () => {
             <p className="text-xs text-muted-foreground mt-1">
               {lang === 'ar' ? 'استقبل وأدر حجوزات العملاء بسهولة'
                 : lang === 'fr' ? 'Recevez et gerez facilement les reservations clients'
-                : 'Receive and manage customer bookings easily'}
+                  : 'Receive and manage customer bookings easily'}
             </p>
           </div>
         </div>
@@ -416,7 +409,7 @@ export const SetupWizard: React.FC = () => {
             <p className="text-xs text-muted-foreground mt-1">
               {lang === 'ar' ? 'تتبع إحصائيات نشاطك ونموك'
                 : lang === 'fr' ? 'Suivez les statistiques de votre activite et croissance'
-                : 'Track your business stats and growth'}
+                  : 'Track your business stats and growth'}
             </p>
           </div>
         </div>
@@ -432,7 +425,7 @@ export const SetupWizard: React.FC = () => {
             <p className="text-xs text-muted-foreground mt-1">
               {lang === 'ar' ? 'انشر عروضك واجذب عملاء جدد'
                 : lang === 'fr' ? 'Publiez vos offres et attirez de nouveaux clients'
-                : 'Publish your offers and attract new customers'}
+                  : 'Publish your offers and attract new customers'}
             </p>
           </div>
         </div>
@@ -448,7 +441,7 @@ export const SetupWizard: React.FC = () => {
             <p className="text-xs text-muted-foreground mt-1">
               {lang === 'ar' ? 'تواصل مباشرة مع عملائك عبر الرسائل'
                 : lang === 'fr' ? 'Communiquez directement avec vos clients par messagerie'
-                : 'Communicate directly with your customers via messaging'}
+                  : 'Communicate directly with your customers via messaging'}
             </p>
           </div>
         </div>
@@ -477,11 +470,10 @@ export const SetupWizard: React.FC = () => {
                   updatePreferences({ location: { enabled: true, city } });
                   setShowCitySelect(false);
                 }}
-                className={`w-full p-3 rounded-lg border transition-all text-left ${
-                  preferences.location.city === city
+                className={`w-full p-3 rounded-lg border transition-all text-left ${preferences.location.city === city
                     ? 'border-primary bg-primary/5'
                     : 'border-border bg-card hover:border-primary/50'
-                }`}
+                  }`}
               >
                 <p className="font-medium text-foreground">{city}</p>
               </button>
@@ -548,8 +540,8 @@ export const SetupWizard: React.FC = () => {
                   {preferences.notifications.enabled
                     ? (lang === 'ar' ? 'مفعل ✓' : lang === 'fr' ? 'Active ✓' : 'Enabled ✓')
                     : notificationBlocked
-                    ? (lang === 'ar' ? 'محظور في المتصفح' : lang === 'fr' ? 'Bloque dans le navigateur' : 'Blocked in browser')
-                    : (lang === 'ar' ? 'تنبيهات العروض والحجوزات' : lang === 'fr' ? 'Alertes offres et reservations' : 'Deal and booking alerts')}
+                      ? (lang === 'ar' ? 'محظور في المتصفح' : lang === 'fr' ? 'Bloque dans le navigateur' : 'Blocked in browser')
+                      : (lang === 'ar' ? 'تنبيهات العروض والحجوزات' : lang === 'fr' ? 'Alertes offres et reservations' : 'Deal and booking alerts')}
                 </p>
               </div>
               {!preferences.notifications.enabled && !notificationBlocked && (
@@ -564,8 +556,8 @@ export const SetupWizard: React.FC = () => {
                   {lang === 'ar'
                     ? 'انقر على أيقونة القفل بجوار شريط العنوان، ثم اسمح بالإشعارات'
                     : lang === 'fr'
-                    ? 'Cliquez sur l\'icone du cadenas pres de la barre d\'adresse, puis autorisez les notifications'
-                    : 'Click the lock icon near the address bar, then allow notifications'}
+                      ? 'Cliquez sur l\'icone du cadenas pres de la barre d\'adresse, puis autorisez les notifications'
+                      : 'Click the lock icon near the address bar, then allow notifications'}
                 </p>
                 <Button
                   size="sm"
@@ -604,8 +596,8 @@ export const SetupWizard: React.FC = () => {
                   {lang === 'ar'
                     ? 'في Safari: اضغط على المشاركة -> إضافة للشاشة الرئيسية'
                     : lang === 'fr'
-                    ? 'Dans Safari: Appuyez Partager -> Sur l\'ecran d\'accueil'
-                    : 'In Safari: Tap Share -> Add to Home Screen'}
+                      ? 'Dans Safari: Appuyez Partager -> Sur l\'ecran d\'accueil'
+                      : 'In Safari: Tap Share -> Add to Home Screen'}
                 </p>
               )}
             </div>
@@ -640,7 +632,7 @@ export const SetupWizard: React.FC = () => {
                 <p className="text-xs text-muted-foreground mt-1">
                   {lang === 'ar' ? 'استخدم وضع الجهاز اللوحي لإدارة الحجوزات بسهولة في صالونك'
                     : lang === 'fr' ? 'Utilisez le mode tablette pour gerer facilement les reservations dans votre salon'
-                    : 'Use tablet mode to easily manage bookings at your salon'}
+                      : 'Use tablet mode to easily manage bookings at your salon'}
                 </p>
               </div>
             </div>
@@ -656,7 +648,7 @@ export const SetupWizard: React.FC = () => {
                 <p className="text-xs text-muted-foreground mt-1">
                   {lang === 'ar' ? 'رد بسرعة على طلبات العملاء للحصول على تقييمات أفضل'
                     : lang === 'fr' ? 'Repondez rapidement aux demandes clients pour de meilleurs avis'
-                    : 'Respond quickly to customer requests for better ratings'}
+                      : 'Respond quickly to customer requests for better ratings'}
                 </p>
               </div>
             </div>
@@ -672,7 +664,7 @@ export const SetupWizard: React.FC = () => {
                 <p className="text-xs text-muted-foreground mt-1">
                   {lang === 'ar' ? 'أضف صور عالية الجودة وعروض جذابة لجذب المزيد من العملاء'
                     : lang === 'fr' ? 'Ajoutez des photos de qualite et des offres attractives'
-                    : 'Add quality photos and attractive offers to attract more customers'}
+                      : 'Add quality photos and attractive offers to attract more customers'}
                 </p>
               </div>
             </div>
@@ -688,7 +680,7 @@ export const SetupWizard: React.FC = () => {
                 <p className="text-xs text-muted-foreground mt-1">
                   {lang === 'ar' ? 'يمكنك إكمال ملفك الشخصي للأعمال بعد التسجيل'
                     : lang === 'fr' ? 'Vous pouvez completer votre profil business apres inscription'
-                    : 'You can complete your business profile after registration'}
+                      : 'You can complete your business profile after registration'}
                 </p>
               </div>
             </div>
@@ -720,7 +712,7 @@ export const SetupWizard: React.FC = () => {
               <p className="text-xs text-muted-foreground mt-1">
                 {lang === 'ar' ? 'تصفح العروض الحصرية من صالونات التجميل القريبة منك'
                   : lang === 'fr' ? 'Parcourez les offres exclusives des salons pres de chez vous'
-                  : 'Browse exclusive offers from beauty salons near you'}
+                    : 'Browse exclusive offers from beauty salons near you'}
               </p>
             </div>
           </div>
@@ -736,7 +728,7 @@ export const SetupWizard: React.FC = () => {
               <p className="text-xs text-muted-foreground mt-1">
                 {lang === 'ar' ? 'احفظ صالوناتك المفضلة للوصول السريع إليها'
                   : lang === 'fr' ? 'Enregistrez vos salons preferes pour un acces rapide'
-                  : 'Save your favorite salons for quick access'}
+                    : 'Save your favorite salons for quick access'}
               </p>
             </div>
           </div>
@@ -752,7 +744,7 @@ export const SetupWizard: React.FC = () => {
               <p className="text-xs text-muted-foreground mt-1">
                 {lang === 'ar' ? 'فعّل الإشعارات لتكون أول من يعرف عن العروض الجديدة'
                   : lang === 'fr' ? 'Activez les notifs pour etre le premier informe des nouvelles offres'
-                  : 'Enable notifications to be the first to know about new deals'}
+                    : 'Enable notifications to be the first to know about new deals'}
               </p>
             </div>
           </div>
@@ -768,7 +760,7 @@ export const SetupWizard: React.FC = () => {
               <p className="text-xs text-muted-foreground mt-1">
                 {lang === 'ar' ? 'احجز موعدك في ثوانٍ واحصل على تأكيد فوري'
                   : lang === 'fr' ? 'Reservez en quelques secondes et recevez une confirmation instantanee'
-                  : 'Book in seconds and receive instant confirmation'}
+                    : 'Book in seconds and receive instant confirmation'}
               </p>
             </div>
           </div>

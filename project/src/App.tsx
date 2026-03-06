@@ -7,9 +7,11 @@ import SplashScreen from './components/SplashScreen';
 import OnboardingPage from './pages/OnboardingPage';
 import AppRoutes from './app/routes';
 import ScrollToTop from './components/ScrollToTop';
+import { AppInstallPrompt } from './components/AppInstallPrompt';
 import { usePreferences } from './hooks/usePreferences';
 import { useAuth } from './hooks/useAuth';
 import { useState } from 'react';
+import { PWAProvider } from './contexts/PWAContext';
 
 if (import.meta.env.DEV) {
   import('./lib/assertEnv').then(({ assertEnv }) => {
@@ -29,13 +31,15 @@ function App() {
     <Router>
       <ScrollToTop />
       <ThemeProvider>
-        <ToastProvider>
-          {showSplash ? (
-            <SplashScreen onComplete={() => setSplashDone(true)} />
-          ) : (
-            <AppContent />
-          )}
-        </ToastProvider>
+        <PWAProvider>
+          <ToastProvider>
+            {showSplash ? (
+              <SplashScreen onComplete={() => setSplashDone(true)} />
+            ) : (
+              <AppContent />
+            )}
+          </ToastProvider>
+        </PWAProvider>
       </ThemeProvider>
     </Router>
   );
@@ -62,6 +66,7 @@ function AppContent() {
       <Shell>
         <AppRoutes />
       </Shell>
+      <AppInstallPrompt />
     </AppLayout>
   );
 }

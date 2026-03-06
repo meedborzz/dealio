@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Calendar, Clock, MapPin, X, Star, Phone, AlertTriangle, DollarSign, CheckCircle, ChevronRight, CheckCircle2 } from 'lucide-react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { ArrowLeft, Calendar, Clock, MapPin, X, Phone, AlertTriangle, CheckCircle2, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchUserBookings, getBookingStatusCounts, BookingFilters } from './api';
 import { supabase } from '../../lib/supabase';
-import { Booking, BookingStatus, NotificationType } from '../../types';
+import { Booking, BookingStatus } from '../../types';
 import SkeletonLoader from '../../components/SkeletonLoader';
 import { format, parseISO, addMinutes } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { sendBookingCancellation } from '../../lib/notifications';
-import { playNotificationSound } from '../../utils/soundUtils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SatisfactionRating } from '../../components/SatisfactionRating';
 
 import NotificationToast from '../../components/NotificationToast';
@@ -23,14 +21,13 @@ import { getGuestBookings } from '../../lib/guestBookings';
 const ClientBookingsPage: React.FC = () => {
   const { user, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [statusCounts, setStatusCounts] = useState<any>({});
   const [bookingFilter, setBookingFilter] = useState<BookingStatus | 'all'>('pending');
-  const [bookingSortBy, setBookingSortBy] = useState<'date_desc' | 'date_asc'>('date_desc');
+  const [bookingSortBy] = useState<'date_desc' | 'date_asc'>('date_desc');
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null);
   const [showToast, setShowToast] = useState(false);
@@ -177,7 +174,6 @@ const ClientBookingsPage: React.FC = () => {
 
     try {
       if (reset) {
-        setLoading(true);
         setCurrentPage(0);
       } else {
         setLoadingMore(true);
@@ -208,7 +204,6 @@ const ClientBookingsPage: React.FC = () => {
       setToastType('error');
       setShowToast(true);
     } finally {
-      setLoading(false);
       setLoadingMore(false);
     }
   };
@@ -228,12 +223,12 @@ const ClientBookingsPage: React.FC = () => {
     if (!user || !bookingToCancel || !bookingToCancel.deal || !bookingToCancel.deal.business) return;
 
     try {
-      const { error: updateError } = await supabase
-        .from('bookings')
+      const { error: updateError } = await (supabase
+        .from('bookings') as any)
         .update({
           status: 'cancelled',
           updated_at: new Date().toISOString()
-        })
+        } as any)
         .eq('id', bookingToCancel.id);
 
       if (updateError) throw updateError;
@@ -246,12 +241,12 @@ const ClientBookingsPage: React.FC = () => {
           .single();
 
         if (!slotError && timeSlot) {
-          await supabase
-            .from('time_slots')
+          await (supabase
+            .from('time_slots') as any)
             .update({
-              available_spots: timeSlot.available_spots + 1,
+              available_spots: ((timeSlot as any).available_spots || 0) + 1,
               is_available: true
-            })
+            } as any)
             .eq('id', bookingToCancel.time_slot_id);
         }
       }
@@ -329,19 +324,19 @@ const ClientBookingsPage: React.FC = () => {
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 pb-24">
         <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/50 shadow-sm">
           <div className="safe-area-top" />
-          <div className="px-4 py-4">
-            <div className="flex items-center gap-4">
+          <div className="px-4 py-3">
+            <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => navigate('/')}
-                className="h-10 w-10 rounded-full flex-shrink-0 hover:bg-primary/10"
+                className="h-9 w-9 rounded-full flex-shrink-0 hover:bg-primary/10"
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div className="flex-1 min-w-0">
-                <h1 className="text-xl font-bold text-foreground tracking-tight">Mes Reservations</h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-lg font-bold text-foreground tracking-tight">Mes Reservations</h1>
+                <p className="text-xs text-muted-foreground">
                   {guestBookings.length > 0 ? `${guestBookings.length} reservation${guestBookings.length > 1 ? 's' : ''}` : 'Vos reservations'}
                 </p>
               </div>
@@ -357,28 +352,29 @@ const ClientBookingsPage: React.FC = () => {
               ))}
             </div>
           ) : guestBookings.length === 0 ? (
-            <Card className="border-2 border-dashed border-border rounded-3xl shadow-sm">
-              <CardContent className="p-8 md:p-12 text-center">
-                <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Calendar className="h-12 w-12 text-primary" />
+            <Card className="border-none shadow-2xl bg-gradient-to-br from-card to-muted/30 rounded-[2.5rem] overflow-hidden">
+              <CardContent className="p-12 text-center relative">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
+                <div className="w-28 h-28 bg-gradient-to-br from-primary/20 to-primary/5 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner rotate-3 hover:rotate-0 transition-transform duration-500">
+                  <Calendar className="h-14 w-14 text-primary" />
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-3">
-                  Aucune reservation
+                <h3 className="text-3xl font-extrabold text-foreground mb-4 tracking-tight">
+                  Aucune réservation
                 </h3>
-                <p className="text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
-                  Vous pouvez reserver sans compte! Explorez nos offres beaute et reservez votre premier service.
+                <p className="text-muted-foreground mb-10 max-w-sm mx-auto leading-relaxed text-lg">
+                  Vous pouvez réserver sans compte ! Explorez nos offres beauté et réservez votre premier service dès maintenant.
                 </p>
-                <div className="space-y-3 max-w-sm mx-auto">
-                  <Button onClick={() => navigate('/')} className="w-full rounded-full h-12 text-base font-medium shadow-md hover:shadow-lg transition-shadow">
+                <div className="space-y-4 max-w-xs mx-auto">
+                  <Button onClick={() => navigate('/')} className="w-full rounded-2xl h-14 text-lg font-bold shadow-xl hover:shadow-primary/20 hover:scale-[1.02] transition-all bg-primary text-primary-foreground">
                     Explorer les offres
                   </Button>
-                  <Button onClick={() => navigate('/login')} variant="outline" className="w-full rounded-full h-12 text-base">
+                  <Button onClick={() => navigate('/login')} variant="outline" className="w-full rounded-2xl h-14 text-lg font-semibold border-2">
                     Se connecter
                   </Button>
                 </div>
-                <div className="mt-8 p-4 bg-muted/50 rounded-2xl border border-border/50">
-                  <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">Astuce:</strong> Apres une reservation, vos rendez-vous apparaitront ici automatiquement.
+                <div className="mt-12 p-6 bg-primary/5 rounded-[2rem] border border-primary/10">
+                  <p className="text-sm text-primary font-medium">
+                    <span className="opacity-70">Astuce:</span> Après une réservation, vos rendez-vous apparaîtront ici automatiquement.
                   </p>
                 </div>
               </CardContent>
@@ -386,12 +382,14 @@ const ClientBookingsPage: React.FC = () => {
           ) : (
             <div className="space-y-4">
               {guestBookings.map((booking) => (
-                <Card key={booking.id} className="overflow-hidden border border-border/50 shadow-md hover:shadow-xl transition-all duration-300 rounded-3xl group">
-                  <div className="relative overflow-hidden">
-                    <div className="absolute top-4 left-4 z-10">
+                <Card key={booking.id} className="overflow-hidden border-none shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl group bg-card border border-border/40">
+                  <div className="relative h-48 overflow-hidden">
+                    <div className="absolute top-4 left-4 z-10 flex gap-2">
                       <Badge
-                        variant={getStatusVariant(booking.status)}
-                        className={`rounded-full px-4 py-1.5 text-xs font-semibold shadow-lg backdrop-blur-sm ${booking.status === 'pending' ? 'bg-white/30 backdrop-blur-md text-white border-white/50' : ''
+                        className={`rounded-full px-5 py-2 text-xs font-bold shadow-xl backdrop-blur-md border border-white/20 ${booking.status === 'completed' ? 'bg-green-500/90 text-white' :
+                          booking.status === 'confirmed' ? 'bg-blue-500/90 text-white' :
+                            booking.status === 'pending' ? 'bg-amber-500/90 text-white' :
+                              'bg-red-500/90 text-white'
                           }`}
                       >
                         {getStatusText(booking.status)}
@@ -400,69 +398,63 @@ const ClientBookingsPage: React.FC = () => {
                     <img
                       src={booking.deal?.image_url || 'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?auto=compress&cs=tinysrgb&w=400'}
                       alt={booking.deal?.title}
-                      className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
                   </div>
 
-                  <CardContent className="p-5">
-                    <div className="mb-4">
-                      <h4 className="font-bold text-foreground text-lg mb-1 line-clamp-1">{booking.deal?.title}</h4>
-                      <p className="text-sm text-muted-foreground line-clamp-1 flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5" />
-                        {booking.deal?.business?.name}
-                      </p>
+                  <CardContent className="p-6 relative">
+                    <div className="mb-5">
+                      <h4 className="font-extrabold text-foreground text-xl mb-1.5 tracking-tight group-hover:text-primary transition-colors">{booking.deal?.title}</h4>
+                      <div className="flex items-center gap-2 text-muted-foreground/80">
+                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                          <MapPin className="h-3.5 w-3.5 text-primary" />
+                        </div>
+                        <span className="text-sm font-medium">{booking.deal?.business?.name}</span>
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-5">
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-primary/5">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <Calendar className="h-5 w-5 text-primary" />
-                        </div>
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      <div className="flex items-center gap-3 p-4 rounded-3xl bg-secondary/30 border border-white/10">
+                        <Calendar className="h-5 w-5 text-primary" />
                         <div className="min-w-0">
-                          <p className="text-xs text-muted-foreground font-medium">Date</p>
-                          <p className="font-semibold text-foreground text-sm truncate">
+                          <p className="font-bold text-foreground text-sm truncate">
                             {booking.time_slot?.date
                               ? format(parseISO(booking.time_slot.date), 'dd MMM', { locale: fr })
                               : format(parseISO(booking.booking_date), 'dd MMM', { locale: fr })
                             }
                           </p>
+                          <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Date</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 p-3 rounded-2xl bg-primary/5">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <Clock className="h-5 w-5 text-primary" />
-                        </div>
+                      <div className="flex items-center gap-3 p-4 rounded-3xl bg-secondary/30 border border-white/10">
+                        <Clock className="h-5 w-5 text-primary" />
                         <div className="min-w-0">
-                          <p className="text-xs text-muted-foreground font-medium">Heure</p>
-                          <p className="font-semibold text-foreground text-sm">
+                          <p className="font-bold text-foreground text-sm">
                             {booking.time_slot?.start_time
                               ? booking.time_slot.start_time.slice(0, 5)
                               : '--:--'
                             }
                           </p>
+                          <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Heure</p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                    <div className="flex items-center justify-between pt-5 border-t border-border/40">
                       <div>
-                        <p className="text-xs text-muted-foreground font-medium mb-1">Total paye</p>
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl font-bold text-primary leading-none">{booking.total_price} DH</span>
-                          {booking.deal?.original_price && booking.deal.original_price !== booking.total_price && (
-                            <span className="text-sm text-muted-foreground line-through leading-none">{booking.deal.original_price} DH</span>
-                          )}
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-2xl font-black text-primary tracking-tighter">{booking.total_price} DH</span>
                         </div>
+                        <p className="text-[10px] text-muted-foreground font-bold uppercase">Payé</p>
                       </div>
 
                       <Button
                         onClick={() => booking.booking_token && navigate(`/booking/${booking.booking_token}`)}
-                        size="lg"
-                        className="rounded-full px-6 h-11 font-medium shadow-md hover:shadow-lg transition-shadow"
+                        className="rounded-2xl px-6 h-12 font-bold shadow-lg shadow-primary/10 hover:shadow-primary/20 hover:scale-105 transition-all"
                       >
-                        Voir details
-                        <ChevronRight className="h-5 w-5 ml-1" />
+                        Détails
+                        <ChevronRight className="h-5 w-5 ml-1.5" />
                       </Button>
                     </div>
                   </CardContent>
@@ -501,28 +493,28 @@ const ClientBookingsPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 pb-24">
+    <div className="min-h-screen bg-background pb-32">
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/50 shadow-sm">
         <div className="safe-area-top" />
-        <div className="px-4 py-4">
-          <div className="flex items-center gap-4 mb-4">
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-3 mb-3">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => navigate('/')}
-              className="h-10 w-10 rounded-full flex-shrink-0 hover:bg-primary/10"
+              className="h-9 w-9 rounded-full flex-shrink-0 hover:bg-primary/10"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-bold text-foreground tracking-tight">Mes Reservations</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-lg font-bold text-foreground tracking-tight">Mes Reservations</h1>
+              <p className="text-xs text-muted-foreground">
                 {statusCounts.all > 0 ? `${statusCounts.all} reservation${statusCounts.all > 1 ? 's' : ''}` : 'Gerez vos rendez-vous'}
               </p>
             </div>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5 -mx-1 px-1">
             {[
               { key: 'all', label: 'Toutes', count: statusCounts.all },
               { key: 'pending', label: 'En attente', count: statusCounts.pending },
@@ -547,18 +539,19 @@ const ClientBookingsPage: React.FC = () => {
 
       <div className="px-4 pt-6 max-w-2xl mx-auto">
         {bookings.length === 0 ? (
-          <Card className="border-2 border-dashed border-border rounded-3xl shadow-sm">
-            <CardContent className="p-8 md:p-12 text-center">
-              <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Calendar className="h-12 w-12 text-primary" />
+          <Card className="border-none shadow-2xl bg-gradient-to-br from-card to-muted/30 rounded-[2.5rem] overflow-hidden">
+            <CardContent className="p-12 text-center relative">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
+              <div className="w-28 h-28 bg-gradient-to-br from-primary/20 to-primary/5 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner rotate-3 hover:rotate-0 transition-transform duration-500">
+                <Calendar className="h-14 w-14 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-3">
-                Aucune reservation
+              <h3 className="text-3xl font-extrabold text-foreground mb-4 tracking-tight">
+                Aucune réservation
               </h3>
-              <p className="text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
-                Decouvrez nos offres beaute et reservez votre premier service!
+              <p className="text-muted-foreground mb-10 max-w-sm mx-auto leading-relaxed text-lg">
+                Vous n'avez pas encore de réservations. Découvrez nos offres beauté et réservez votre premier service !
               </p>
-              <Button onClick={() => navigate('/')} className="rounded-full px-8 h-12 text-base font-medium shadow-md hover:shadow-lg transition-shadow">
+              <Button onClick={() => navigate('/')} className="w-full max-w-xs rounded-2xl h-14 text-lg font-bold shadow-xl hover:shadow-primary/20 hover:scale-[1.02] transition-all bg-primary text-primary-foreground">
                 Explorer les offres
               </Button>
             </CardContent>
@@ -566,12 +559,15 @@ const ClientBookingsPage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {bookings.map((booking) => (
-              <Card key={booking.id} className="overflow-hidden border border-border/50 shadow-md hover:shadow-xl transition-all duration-300 rounded-3xl group">
-                <div className="relative overflow-hidden">
-                  <div className="absolute top-4 left-4 z-10">
+              <Card key={booking.id} className="overflow-hidden border-none shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl group bg-card border border-border/40">
+                <div className="relative h-48 overflow-hidden">
+                  <div className="absolute top-4 left-4 z-10 flex gap-2">
                     <Badge
-                      variant={getStatusVariant(booking.status)}
-                      className="rounded-full px-4 py-1.5 text-xs font-semibold shadow-lg backdrop-blur-sm"
+                      className={`rounded-full px-5 py-2 text-xs font-bold shadow-xl backdrop-blur-md border border-white/20 ${booking.status === 'completed' ? 'bg-green-500/90 text-white' :
+                        booking.status === 'confirmed' ? 'bg-blue-500/90 text-white' :
+                          booking.status === 'pending' ? 'bg-amber-500/90 text-white' :
+                            'bg-red-500/90 text-white'
+                        }`}
                     >
                       {getStatusText(booking.status)}
                     </Badge>
@@ -581,96 +577,101 @@ const ClientBookingsPage: React.FC = () => {
                       onClick={() => handleCancelBooking(booking)}
                       variant="secondary"
                       size="icon"
-                      className="absolute top-4 right-4 z-10 h-9 w-9 rounded-full bg-white/95 hover:bg-white shadow-lg backdrop-blur-sm"
+                      className="absolute top-4 right-4 z-20 h-10 w-10 rounded-full bg-white/90 hover:bg-white hover:text-destructive shadow-xl backdrop-blur-md transition-all duration-300 scale-90 group-hover:scale-100"
                       title="Annuler"
                     >
-                      <X className="h-4 w-4 text-gray-600" />
+                      <X className="h-5 w-5" />
                     </Button>
                   )}
                   <img
                     src={booking.deal?.image_url || 'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?auto=compress&cs=tinysrgb&w=400'}
                     alt={booking.deal?.title}
-                    className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
                 </div>
 
-                <CardContent className="p-5">
-                  <div className="mb-4">
-                    <h4 className="font-bold text-foreground text-lg mb-1 line-clamp-1">{booking.deal?.title}</h4>
-                    <p className="text-sm text-muted-foreground line-clamp-1 flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {booking.deal?.business?.name}
-                    </p>
+                <CardContent className="p-6 relative">
+                  <div className="mb-5">
+                    <h4 className="font-extrabold text-foreground text-xl mb-1.5 tracking-tight group-hover:text-primary transition-colors">{booking.deal?.title}</h4>
+                    <div className="flex items-center gap-2 text-muted-foreground/80">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <MapPin className="h-3.5 w-3.5 text-primary" />
+                      </div>
+                      <span className="text-sm font-medium">{booking.deal?.business?.name}</span>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mb-5">
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-primary/5">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <Calendar className="h-5 w-5 text-primary" />
-                      </div>
+                  <div className="grid grid-cols-2 gap-3 mb-6">
+                    <div className="flex items-center gap-3 p-4 rounded-3xl bg-secondary/30 border border-white/10">
+                      <Calendar className="h-5 w-5 text-primary" />
                       <div className="min-w-0">
-                        <p className="text-xs text-muted-foreground font-medium">Date</p>
-                        <p className="font-semibold text-foreground text-sm truncate">
+                        <p className="font-bold text-foreground text-sm truncate">
                           {booking.time_slot?.date
                             ? format(parseISO(booking.time_slot.date), 'dd MMM', { locale: fr })
                             : format(parseISO(booking.booking_date), 'dd MMM', { locale: fr })
                           }
                         </p>
+                        <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Date</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-primary/5">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <Clock className="h-5 w-5 text-primary" />
-                      </div>
+                    <div className="flex items-center gap-3 p-4 rounded-3xl bg-secondary/30 border border-white/10">
+                      <Clock className="h-5 w-5 text-primary" />
                       <div className="min-w-0">
-                        <p className="text-xs text-muted-foreground font-medium">Heure</p>
-                        <p className="font-semibold text-foreground text-sm">
+                        <p className="font-bold text-foreground text-sm">
                           {booking.time_slot?.start_time
                             ? booking.time_slot.start_time.slice(0, 5)
                             : '--:--'
                           }
                         </p>
+                        <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Heure</p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                    <div>
-                      <p className="text-xs text-muted-foreground font-medium mb-1">Total paye</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold text-primary leading-none">{booking.total_price} DH</span>
-                        {booking.deal?.original_price && booking.deal.original_price !== booking.total_price && (
-                          <span className="text-sm text-muted-foreground line-through leading-none">{booking.deal.original_price} DH</span>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between pt-5 border-t border-border/40">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-2xl font-black text-primary tracking-tighter">{booking.total_price} DH</span>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground font-bold uppercase">Payé</p>
+                      </div>
+
+                      <div className="flex gap-2">
+                        {booking.status === 'confirmed' && booking.deal?.business?.phone && (
+                          <Button
+                            onClick={() => window.open(`tel:${booking.deal?.business?.phone}`)}
+                            variant="outline"
+                            className="rounded-2xl w-12 h-12 p-0 shadow-lg border-2"
+                            title="Appeler"
+                          >
+                            <Phone className="h-5 w-5" />
+                          </Button>
                         )}
+                        <Button
+                          onClick={() => handleAddToCalendar(booking)}
+                          variant="outline"
+                          className="rounded-2xl w-12 h-12 p-0 shadow-lg border-2"
+                          title="Ajouter au calendrier"
+                        >
+                          <Calendar className="h-5 w-5" />
+                        </Button>
                       </div>
                     </div>
 
-                    {booking.status === 'confirmed' && booking.deal?.business?.phone && (
-                      <Button
-                        onClick={() => window.open(`tel:${booking.deal?.business?.phone}`)}
-                        variant="outline"
-                        size="lg"
-                        className="rounded-full px-5 h-11 font-medium shadow-md hover:shadow-lg transition-shadow"
-                      >
-                        <Phone className="h-4 w-4 mr-2" />
-                        Appeler
-                      </Button>
+                    {booking.status === 'confirmed' && !booking.has_feedback && (
+                      <div className="pt-2">
+                        <SatisfactionRating
+                          bookingId={booking.id}
+                          dealId={booking.deal_id}
+                          businessId={booking.deal?.business?.id || ''}
+                          userId={user?.id}
+                          onRated={() => fetchBookings(true)}
+                        />
+                      </div>
                     )}
-
                   </div>
-
-                  {booking.status === 'confirmed' && !booking.has_feedback && (
-                    <div className="mt-5 pt-5 border-t border-border/50">
-                      <SatisfactionRating
-                        bookingId={booking.id}
-                        dealId={booking.deal_id}
-                        businessId={booking.deal?.business?.id || ''}
-                        userId={user?.id}
-                        onRated={() => fetchBookings(true)}
-                      />
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             ))}

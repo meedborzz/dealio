@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Scissors, Hand, Waves, Sparkles, Filter, Flame } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Filter, Flame } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 import { useDeals } from '../hooks/useDeals';
 import { useNotifications } from '../hooks/useNotifications';
@@ -22,6 +22,7 @@ import { BusinessCardSmall } from '@/components/home/BusinessCardSmall';
 import { OfferSlider } from '@/components/home/OfferSlider';
 import { AdvertisingBanner } from '@/components/home/AdvertisingBanner';
 import { InstallButton } from '../components/InstallButton';
+import LocationPermissionPrompt from '../components/LocationPermissionPrompt';
 import { FEATURES } from '../config/features';
 import { getStoredCity, DEFAULT_CITY } from '../config/location';
 import { getAvailableCategories } from '../config/servicePresets';
@@ -61,6 +62,7 @@ const HomePage: React.FC = () => {
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   const [showLocationModal, setShowLocationModal] = useState(false);
+  const [showLocationPrompt, setShowLocationPrompt] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -81,8 +83,13 @@ const HomePage: React.FC = () => {
   const { deals: allDeals, loading: dealsLoading, error: dealsError, refetch: refetchDeals } = useDeals(dealsQuery);
 
   const requestNearbyLocation = () => {
+    setShowLocationPrompt(true);
+  };
+
+  const performLocationRequest = () => {
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser');
+      setShowLocationPrompt(false);
       return;
     }
 
@@ -96,12 +103,14 @@ const HomePage: React.FC = () => {
         reverseGeocode(position.coords.latitude, position.coords.longitude);
         setIsLoadingLocation(false);
         setLocationPermission('granted');
+        setShowLocationPrompt(false);
       },
       (error) => {
         console.error('Error getting location:', error);
         setIsLoadingLocation(false);
         setLocationPermission('denied');
-        alert('Active la localisation pour voir les salons près de toi. Sinon, on te montre ' + DEFAULT_CITY.name + '.');
+        setShowLocationPrompt(false);
+        alert('Active la localisation dans les réglages de ton iPhone/Safari pour voir les salons près de toi.');
       }
     );
   };
@@ -431,7 +440,6 @@ const HomePage: React.FC = () => {
           <InstallButton />
         </section>
 
-        <div className="h-24" />
       </div>
 
       {showLocationModal && (
@@ -487,6 +495,16 @@ const HomePage: React.FC = () => {
           }}
         />
       )}
+
+      <LocationPermissionPrompt
+        isOpen={showLocationPrompt}
+        onClose={() => setShowLocationPrompt(false)}
+        onAllow={performLocationRequest}
+        onManualLocation={() => {
+          setShowLocationPrompt(false);
+          setShowLocationModal(true);
+        }}
+      />
     </div>
   );
 };

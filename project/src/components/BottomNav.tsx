@@ -12,8 +12,8 @@ const BottomNav: React.FC = () => {
   const { isOpen: isGuestPromptOpen, promptConfig, showPrompt, hidePrompt } = useGuestPrompt();
 
   if (['/login', '/register'].includes(location.pathname) ||
-      (user && userProfile && isBusinessOwner() && location.pathname.startsWith('/business')) ||
-      (user && userProfile && isAdmin() && location.pathname.startsWith('/admin'))) {
+    (user && userProfile && isBusinessOwner() && location.pathname.startsWith('/business')) ||
+    (user && userProfile && isAdmin() && location.pathname.startsWith('/admin'))) {
     return null;
   }
 
@@ -38,8 +38,8 @@ const BottomNav: React.FC = () => {
 
   return (
     <>
-      <nav className="fixed left-4 right-4 bg-background/80 backdrop-blur-md border border-border/50 shadow-lg rounded-2xl z-50 mobile-bottom-nav pb-safe" style={{ bottom: 'calc(1rem + var(--safe-area-inset-bottom))' }}>
-        <div className="flex justify-around items-center py-2 px-2 px-safe">
+      <nav className="fixed left-4 right-4 bg-background/80 backdrop-blur-md border border-border/50 shadow-lg rounded-2xl z-50 mobile-bottom-nav" style={{ bottom: 'var(--safe-area-inset-bottom)' }}>
+        <div className="flex justify-around items-center py-2 px-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.to;
@@ -54,11 +54,10 @@ const BottomNav: React.FC = () => {
                     navigate(item.to);
                   }
                 }}
-                className={`relative flex flex-col items-center justify-center mobile-nav-item transition-all min-h-[50px] md:min-h-[60px] flex-1 ${
-                  isActive
-                    ? 'text-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                className={`relative flex flex-col items-center justify-center mobile-nav-item transition-all min-h-[50px] md:min-h-[60px] flex-1 ${isActive
+                  ? 'text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+                  }`}
               >
                 <Icon className="h-4 w-4 md:h-6 md:w-6 mb-0.5 md:mb-1" strokeWidth={1.75} />
                 <span className="text-xs font-medium">{item.label}</span>

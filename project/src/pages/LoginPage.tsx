@@ -9,6 +9,7 @@ import { t } from '@/lib/i18n';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Logo from '../components/Logo';
 import { supabase } from '../lib/supabase';
+import { motion } from 'framer-motion';
 
 interface LoginPageProps {
 }
@@ -105,96 +106,123 @@ const LoginPage: React.FC<LoginPageProps> = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-primary flex items-center justify-between p-4">
-        <button onClick={() => navigate('/')} className="p-2 text-primary-foreground hover:bg-primary-foreground/20 rounded-full transition-colors">
-          <ArrowLeft className="h-6 w-6" strokeWidth={1.75} />
-        </button>
-        <Logo className="h-10 w-10" />
-        <div className="w-10"></div>
+    <div className="min-h-dvh bg-background flex flex-col items-center">
+      {/* Premium Purple Header (Unified with Registration) */}
+      <div className="w-full bg-primary pt-safe pb-8 px-6 flex flex-col items-center relative overflow-hidden">
+        {/* Subtle decorative circles */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16 blur-2xl" />
+
+        <div className="w-full max-w-[440px] flex items-center justify-between relative z-10">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/')}
+            className="p-2 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10 rounded-full transition-all"
+          >
+            <ArrowLeft className="h-6 w-6" strokeWidth={2} />
+          </motion.button>
+
+          <Logo className="h-10 w-auto" />
+
+          <div className="w-10"></div>
+        </div>
       </div>
 
-      <div className="p-6 max-w-md mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-semibold text-foreground mb-3">
-            {t('auth.login.title', preferences.language)}
-          </h2>
-          <p className="text-muted-foreground">{t('auth.login.subtitle', preferences.language)}</p>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-muted border border-border rounded-2xl">
-            <p className="text-foreground text-sm">{error}</p>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              {t('auth.login.email', preferences.language)}
-            </label>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-lg"
-              placeholder={t('auth.login.email_placeholder', preferences.language)}
-            />
+      <div className="w-full max-w-[440px] px-6 py-12 space-y-8 flex-1 flex flex-col justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full"
+        >
+          <div className="text-center mb-10 space-y-2">
+            <h2 className="text-3xl font-extrabold text-foreground tracking-tight">
+              {t('auth.login.title', preferences.language)}
+            </h2>
+            <p className="text-muted-foreground font-medium">{t('auth.login.subtitle', preferences.language)}</p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              {t('auth.login.password', preferences.language)}
-            </label>
-            <div className="relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 pr-12 rounded-lg"
-                placeholder={t('auth.login.password_placeholder', preferences.language)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                {showPassword ? <EyeOff className="h-5 w-5" strokeWidth={1.75} /> : <Eye className="h-5 w-5" strokeWidth={1.75} />}
-              </button>
+          {/* Messages */}
+          {error && (
+            <div className="mb-8 p-4 bg-destructive/10 border border-destructive/20 rounded-2xl">
+              <p className="text-destructive text-sm font-semibold text-center">{error}</p>
             </div>
-          </div>
+          )}
 
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full"
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
-                <span>{t('auth.login.submitting', preferences.language)}</span>
+          <div className="bg-card rounded-[2.5rem] shadow-xl border border-border/40 p-8 sm:p-10">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-foreground/70 ml-1">
+                  {t('auth.login.email', preferences.language)}
+                </label>
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-5 py-3.5 rounded-2xl bg-muted/50 border-transparent focus:bg-background focus:ring-2 focus:ring-primary/20 transition-all text-base"
+                  placeholder={t('auth.login.email_placeholder', preferences.language)}
+                />
               </div>
-            ) : (
-              t('auth.login.title', preferences.language)
-            )}
-          </Button>
-        </form>
 
-        <div className="mt-8 text-center">
-          <p className="text-muted-foreground text-sm mb-4">
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-foreground/70 ml-1">
+                  {t('auth.login.password', preferences.language)}
+                </label>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full px-5 py-3.5 pr-14 rounded-2xl bg-muted/50 border-transparent focus:bg-background focus:ring-2 focus:ring-primary/20 transition-all text-base"
+                    placeholder={t('auth.login.password_placeholder', preferences.language)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" strokeWidth={2} /> : <Eye className="h-5 w-5" strokeWidth={2} />}
+                  </button>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-7 rounded-2xl text-lg font-bold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 transition-all active:scale-[0.98]"
+              >
+                {isLoading ? (
+                  <div className="flex items-center space-x-3">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
+                    <span>{t('auth.login.submitting', preferences.language)}</span>
+                  </div>
+                ) : (
+                  t('auth.login.title', preferences.language)
+                )}
+              </Button>
+            </form>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-center pt-6"
+        >
+          <p className="text-muted-foreground font-medium text-sm mb-6">
             {t('auth.login.no_account', preferences.language)}
           </p>
           <button
             onClick={() => navigate('/register')}
-            className="w-full border border-border text-foreground py-3 rounded-2xl font-medium hover:bg-muted transition-all duration-150 ease"
+            className="w-full py-4 border-2 border-border/50 text-foreground rounded-2xl font-bold bg-muted/30 hover:bg-muted/60 transition-all active:scale-[0.99]"
           >
             {t('auth.login.create_account', preferences.language)}
           </button>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

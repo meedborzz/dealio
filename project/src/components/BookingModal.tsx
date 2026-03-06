@@ -345,9 +345,10 @@ const BookingModal: React.FC<BookingModalProps> = ({
       }
 
       await fetchTimeSlots();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating booking:', error);
-      alert('Erreur lors de la reservation. Veuillez reessayer.');
+      const errorMessage = error?.message || (typeof error === 'string' ? error : 'Erreur inconnue');
+      alert(`Erreur lors de la réservation: ${errorMessage}\nVeuillez réessayer.`);
     } finally {
       setLoading(false);
       submittingRef.current = false;

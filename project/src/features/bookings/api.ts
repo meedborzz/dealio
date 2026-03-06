@@ -1,4 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { Database } from '../../types/database';
 import { BookingStatus } from '../../types';
 
 export interface BookingFilters {
@@ -9,7 +10,7 @@ export interface BookingFilters {
 }
 
 export async function fetchUserBookings(
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseClient<Database>,
   userId: string,
   filters: BookingFilters = {}
 ) {
@@ -88,19 +89,19 @@ export async function fetchUserBookings(
   // Apply pagination
   query = query.range(offset, offset + limit - 1);
 
-  const { data, error, count } = await query;
+  const { data, error, count } = await (query as any);
 
   if (error) throw error;
 
   // Check if booking has reviews and feedback (optimized single query)
-  const bookingIds = data?.map(b => b.id) || [];
+  const bookingIds = (data as any[])?.map(b => b.id) || [];
   let reviewsData: any[] = [];
   let feedbackData: any[] = [];
 
   if (bookingIds.length > 0) {
     const [reviewsResult, feedbackResult] = await Promise.all([
-      supabase.from('reviews').select('booking_id').in('booking_id', bookingIds),
-      supabase.from('booking_feedback').select('booking_id').in('booking_id', bookingIds)
+      (supabase.from('reviews') as any).select('booking_id').in('booking_id', bookingIds),
+      (supabase.from('booking_feedback') as any).select('booking_id').in('booking_id', bookingIds)
     ]);
 
     reviewsData = reviewsResult.data || [];
@@ -108,7 +109,7 @@ export async function fetchUserBookings(
   }
 
   // Add has_review and has_feedback properties efficiently
-  const bookingsWithReviewStatus = (data || []).map(booking => ({
+  const bookingsWithReviewStatus = (data as any[] || []).map(booking => ({
     ...booking,
     has_review: reviewsData.some(review => review.booking_id === booking.id),
     has_feedback: feedbackData.some(feedback => feedback.booking_id === booking.id)
@@ -116,13 +117,13 @@ export async function fetchUserBookings(
 
   return {
     bookings: bookingsWithReviewStatus,
-    hasMore: data ? data.length === limit : false,
+    hasMore: data ? (data as any[]).length === limit : false,
     total: count || 0
   };
 }
 
 // Fast count query for status badges
-export async function getBookingStatusCounts(supabase: ReturnType<typeof createClient>, userId: string) {
+export async function getBookingStatusCounts(supabase: SupabaseClient<Database>, userId: string) {
   const { data, error } = await supabase
     .from('bookings')
     .select('status')
@@ -138,7 +139,7 @@ export async function getBookingStatusCounts(supabase: ReturnType<typeof createC
     cancelled: 0
   };
 
-  data?.forEach(booking => {
+  (data as any[])?.forEach(booking => {
     if (booking.status in counts) {
       counts[booking.status as keyof typeof counts]++;
     }

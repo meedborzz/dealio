@@ -93,9 +93,7 @@ const LocationPermissionPrompt: React.FC<LocationPermissionPromptProps> = ({
             </Button>
           </div>
 
-          <p className="text-xs text-muted-foreground text-center">
-            🔒 Vos données restent privées et sécurisées
-          </p>
+         
         </CardContent>
       </Card>
     </div>

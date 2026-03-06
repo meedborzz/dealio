@@ -1,10 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { format, addDays, startOfWeek, isSameDay, parseISO, startOfDay } from 'date-fns';
+import { format, addDays, startOfWeek, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { fr } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 const TIMEZONE = 'Africa/Casablanca';
 
@@ -159,17 +158,17 @@ const BusinessCalendarView: React.FC<BusinessCalendarViewProps> = ({
     switch (status) {
       case 'pending':
       case 'requested':
-        return 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800';
+        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/50';
       case 'confirmed':
-        return 'bg-primary/15 text-primary border-primary/30';
+        return 'bg-primary/10 text-primary border-primary/20';
       case 'checked_in':
-        return 'bg-primary/20 text-primary border-primary/40';
+        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/50';
       case 'completed':
-        return 'bg-muted text-muted-foreground border-border';
+        return 'bg-secondary text-secondary-foreground border-border';
       case 'cancelled':
-        return 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300 border-red-300 dark:border-red-800';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'noshow':
-        return 'bg-muted/50 text-muted-foreground border-border';
+        return 'bg-muted/50 text-muted-foreground border-border grayscale';
       default:
         return 'bg-muted text-muted-foreground border-border';
     }
@@ -324,22 +323,21 @@ const BusinessCalendarView: React.FC<BusinessCalendarViewProps> = ({
           <div className="overflow-x-auto">
             <div className={view === 'week' ? 'min-w-[1200px]' : 'min-w-full'}>
               {/* Days Header */}
-              <div className="grid sticky top-0 bg-card border-b border-border z-10" style={{
+              <div className="grid sticky top-0 bg-card/80 backdrop-blur-md border-b border-border z-30 shadow-sm" style={{
                 gridTemplateColumns: view === 'week'
                   ? `80px repeat(${daysToShow.length}, minmax(160px, 1fr))`
                   : `80px repeat(${daysToShow.length}, 1fr)`
               }}>
-                <div className="p-2 border-r border-border w-[80px]"></div>
+                <div className="p-4 border-r border-border w-[80px]"></div>
                 {daysToShow.map((day, idx) => (
-                  <div key={idx} className={`p-2 text-center border-r border-border ${view === 'week' ? 'min-w-[160px]' : ''}`}>
-                    <div className="text-sm font-medium text-foreground">
+                  <div key={idx} className={`p-4 text-center border-r border-border transition-colors ${view === 'week' ? 'min-w-[160px]' : ''} ${isSameDay(day, toZonedTime(new Date(), TIMEZONE)) ? 'bg-primary/5' : ''}`}>
+                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">
                       {format(day, 'EEE', { locale: fr })}
                     </div>
-                    <div className={`text-lg font-semibold ${
-                      isSameDay(day, toZonedTime(new Date(), TIMEZONE))
-                        ? 'text-primary'
-                        : 'text-foreground'
-                    }`}>
+                    <div className={`text-2xl font-black ${isSameDay(day, toZonedTime(new Date(), TIMEZONE))
+                      ? 'text-primary'
+                      : 'text-foreground'
+                      }`}>
                       {format(day, 'd')}
                     </div>
                   </div>
@@ -366,91 +364,90 @@ const BusinessCalendarView: React.FC<BusinessCalendarViewProps> = ({
                       {`${hour.toString().padStart(2, '0')}:00`}
                     </div>
 
-                  {/* Day Columns */}
-                  {daysToShow.map((day, dayIdx) => {
-                    const isToday = isSameDay(day, toZonedTime(new Date(), TIMEZONE));
+                    {/* Day Columns */}
+                    {daysToShow.map((day, dayIdx) => {
+                      const isToday = isSameDay(day, toZonedTime(new Date(), TIMEZONE));
 
-                    return (
-                      <div
-                        key={dayIdx}
-                        className={`relative border-r border-border hover:bg-accent/50 transition-colors cursor-pointer ${
-                          isToday ? 'bg-primary/5' : ''
-                        }`}
-                        onClick={() => {
-                          onAddBooking(day, `${hour.toString().padStart(2, '0')}:00`);
-                        }}
-                      >
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                          <Plus className="h-4 w-4 text-muted-foreground" />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
-
-              {/* Bookings */}
-              {daysToShow.map((day, dayIdx) => {
-                const dayBookings = getBookingsForDay(day);
-
-                return (
-                  <div
-                    key={`bookings-${dayIdx}`}
-                    className="absolute"
-                    style={{
-                      left: dayIdx === 0 ? '80px' : `calc(80px + (100% - 80px) * ${dayIdx} / ${daysToShow.length})`,
-                      width: `calc((100% - 80px) / ${daysToShow.length})`,
-                      top: 0,
-                      bottom: 0,
-                      pointerEvents: 'none'
-                    }}
-                  >
-                    {dayBookings.map(booking => (
-                      <div
-                        key={booking.id}
-                        className={`absolute border-l-4 rounded shadow-sm cursor-pointer hover:shadow-lg transition-all pointer-events-auto overflow-hidden ${getStatusColor(booking.status)}`}
-                        style={{
-                          top: `${booking.top}px`,
-                          height: `${booking.height}px`,
-                          left: `${(booking.column / booking.totalColumns) * 100}%`,
-                          width: `${(100 / booking.totalColumns) - 1}%`,
-                          minHeight: '30px'
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onBookingClick(booking);
-                        }}
-                      >
-                        <div className="p-1.5 h-full overflow-hidden flex flex-col">
-                          <div className="text-xs font-semibold truncate leading-tight">
-                            {format(toZonedTime(parseISO(booking.start_at), TIMEZONE), 'HH:mm')} - {booking.customer_name}
+                      return (
+                        <div
+                          key={dayIdx}
+                          className={`relative border-r border-border hover:bg-accent/50 transition-colors cursor-pointer ${isToday ? 'bg-primary/5' : ''
+                            }`}
+                          onClick={() => {
+                            onAddBooking(day, `${hour.toString().padStart(2, '0')}:00`);
+                          }}
+                        >
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <Plus className="h-4 w-4 text-muted-foreground" />
                           </div>
-                          {booking.height > 35 && (
-                            <div className="text-xs truncate mt-0.5 leading-tight">
-                              {booking.service_summary}
-                            </div>
-                          )}
-                          {(booking.status === 'pending' || booking.status === 'requested') && booking.height > 55 && (
-                            <Badge variant="secondary" className="text-[10px] mt-1 py-0 px-1 h-4">
-                              À confirmer
-                            </Badge>
-                          )}
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
-                );
-              })}
+                ))}
 
-              {/* Current Time Indicator */}
-              {nowIndicator !== null && daysToShow.some(day => isSameDay(day, toZonedTime(new Date(), TIMEZONE))) && (
-                <div
-                  className="absolute left-0 right-0 border-t-2 border-red-500 pointer-events-none z-20"
-                  style={{ top: `${(nowIndicator / 100) * hours.length * HOUR_HEIGHT}px` }}
-                >
-                  <div className="absolute left-20 -top-1 w-2 h-2 bg-red-500 rounded-full"></div>
-                </div>
-              )}
+                {/* Bookings */}
+                {daysToShow.map((day, dayIdx) => {
+                  const dayBookings = getBookingsForDay(day);
+
+                  return (
+                    <div
+                      key={`bookings-${dayIdx}`}
+                      className="absolute"
+                      style={{
+                        left: dayIdx === 0 ? '80px' : `calc(80px + (100% - 80px) * ${dayIdx} / ${daysToShow.length})`,
+                        width: `calc((100% - 80px) / ${daysToShow.length})`,
+                        top: 0,
+                        bottom: 0,
+                        pointerEvents: 'none'
+                      }}
+                    >
+                      {dayBookings.map(booking => (
+                        <div
+                          key={booking.id}
+                          className={`absolute border-l-[6px] rounded-3xl shadow-lg cursor-pointer hover:shadow-2xl hover:scale-[1.02] hover:z-20 active:scale-95 transition-all duration-300 pointer-events-auto overflow-hidden border border-white/20 dark:border-white/5 backdrop-blur-md ${getStatusColor(booking.status)}`}
+                          style={{
+                            top: `${booking.top + 4}px`,
+                            height: `${booking.height - 8}px`,
+                            left: `${(booking.column / booking.totalColumns) * 100}%`,
+                            width: `${(100 / booking.totalColumns) - 1}%`,
+                            minHeight: '40px'
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onBookingClick(booking);
+                          }}
+                        >
+                          <div className="p-3 h-full overflow-hidden flex flex-col justify-center">
+                            <div className="text-[11px] font-black truncate leading-none mb-1.5 opacity-90 uppercase tracking-tight">
+                              {format(toZonedTime(parseISO(booking.start_at), TIMEZONE), 'HH:mm')} • {booking.customer_name}
+                            </div>
+                            {booking.height > 60 && (
+                              <div className="text-[10px] font-bold truncate leading-tight opacity-70">
+                                {booking.service_summary}
+                              </div>
+                            )}
+                            {(booking.status === 'pending' || booking.status === 'requested') && booking.height > 80 && (
+                              <div className="mt-2 text-[8px] font-black bg-white/20 dark:bg-black/20 px-2 py-0.5 rounded-full w-fit uppercase tracking-tighter shadow-sm border border-white/10">
+                                À confirmer
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+
+                {/* Current Time Indicator */}
+                {nowIndicator !== null && daysToShow.some(day => isSameDay(day, toZonedTime(new Date(), TIMEZONE))) && (
+                  <div
+                    className="absolute left-0 right-0 border-t-2 border-red-500 pointer-events-none z-20"
+                    style={{ top: `${(nowIndicator / 100) * hours.length * HOUR_HEIGHT}px` }}
+                  >
+                    <div className="absolute left-20 -top-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
