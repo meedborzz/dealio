@@ -69,7 +69,7 @@ const BusinessLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between md:hidden">
+      <div className="bg-card border-b border-border pt-safe px-4 py-3 flex items-center justify-between md:hidden">
         <Button
           variant="ghost"
           size="icon"
@@ -113,7 +113,7 @@ const BusinessLayout: React.FC = () => {
             onClick={() => setSidebarOpen(false)}
           />
           <div className="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border flex flex-col md:hidden">
-            <div className="p-4 border-b border-border">
+            <div className="p-4 pt-safe border-b border-border">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -287,7 +287,7 @@ const BusinessLayout: React.FC = () => {
       </div>
 
       <div className="md:hidden">
-        <div className="p-3">
+        <div className="p-4 pt-2">
           <Outlet />
         </div>
       </div>

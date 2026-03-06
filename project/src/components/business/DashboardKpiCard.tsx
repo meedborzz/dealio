@@ -37,9 +37,8 @@ export const DashboardKpiCard: React.FC<DashboardKpiCardProps> = ({
             </div>
           </div>
           {trend !== undefined && !loading && (
-            <div className={`flex items-center space-x-1 shrink-0 ml-2 ${
-              trend >= 0 ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-600 dark:text-red-500'
-            }`}>
+            <div className={`flex items-center space-x-1 shrink-0 ml-2 ${trend >= 0 ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-600 dark:text-red-500'
+              }`}>
               {trend >= 0 ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (

@@ -42,7 +42,7 @@ const AdminLayoutContent: React.FC = () => {
       {/* Mobile: Full screen layout */}
       <div className="md:hidden">
         {/* Mobile Header */}
-        <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
+        <div className="bg-card border-b border-border pt-safe px-4 py-3 flex items-center justify-between">
           <Button
             variant="ghost"
             size="icon"
@@ -76,7 +76,7 @@ const AdminLayoutContent: React.FC = () => {
             />
             <div className="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border flex flex-col">
               {/* Mobile Sidebar Header */}
-              <div className="p-4 border-b border-border">
+              <div className="p-4 pt-safe border-b border-border">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
